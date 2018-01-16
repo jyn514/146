@@ -24,18 +24,6 @@ public class Game {
 		keyboard.close();
 	}
 
-/*	private static void clearScreen() { // not currently working, prints [?]
-		if (System.getProperty("os.name").contains("Windows")) {
-			try {
-				new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor(); // hacky
-			} catch (IOException | InterruptedException e) {
-				hackierClearScreen();
-			}
-		} else { // TODO: handle same way as windows
-			hackierClearScreen();
-		}
-	}
-*/
 	private static void hackierClearScreen() {
 		for (int i = 0; i < 1000; i++) {
 			System.out.println(); // should clear buffer memory
