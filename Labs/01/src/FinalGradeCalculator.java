@@ -33,6 +33,10 @@ public final class FinalGradeCalculator {
     final char finalGrade;
     final float[] gradeTypes = new float[CATEGORY.values().length];
     final BufferedReader reader = newBufferedReader(file); // throws IOException
+
+    // avoids dynamic arrays. I know, it's ugly
+    float minHomework = Integer.MAX_VALUE, homeworkSum = 0, labSum = 0, extraCreditSum = 0;
+    int numHomeworks = 0, labs = 0;
     String currentInput;
     CATEGORY currentCategory = null;
 
@@ -52,59 +56,59 @@ public final class FinalGradeCalculator {
         case LAB_EXAM_1:
         case LAB_EXAM_2:
         case FINAL:
-          gradeTypes[currentCategory.ordinal()] = (int) Math.ceil(
-              Float.parseFloat(currentInput) / 100 * gradeWeights[currentCategory.ordinal()]);
+          if (gradeTypes[currentCategory.ordinal()] != 0) {
+            throw new IllegalArgumentException("More than one exam for type " + currentCategory.name());
+          }
+          System.out.printf("Your %s average is %s.%n", currentCategory.name(), currentInput);
+          gradeTypes[currentCategory.ordinal()] = Float.parseFloat(currentInput) * gradeWeights[currentCategory.ordinal()] / 100;
+          break;
+        case HOMEWORK:
+          int grade = Integer.parseInt(currentInput);
+          // Find lowest
+          if (minHomework == Integer.MAX_VALUE) minHomework = grade;
+          else if (grade < minHomework) minHomework = grade;
+          homeworkSum += grade;
+          numHomeworks++;
           break;
         case LABS:
-        case HOMEWORK:
+          labSum += Integer.parseInt(currentInput);
+          labs++;
+          break;
         case EXTRA_CREDIT:
-          System.out.printf("%ss are not yet handled.%n", currentCategory.toString());
-
+          extraCreditSum += Integer.parseInt(currentInput);
+          break;
+        default:
+          throw new IllegalStateException("WTF is a " + currentCategory.name() + "?!?!?");
       }
     }
     reader.close();
 
-    int sum = 0;
-    for (int grade : gradeTypes) sum += grade;
+    // get percentage of final grade for homework, dropping lowest
+    float homeworkMean = (homeworkSum - minHomework) / (numHomeworks - 1);
+    System.out.printf("Your homework average is %.2f.%n", homeworkMean);
+    gradeTypes[CATEGORY.HOMEWORK.ordinal()] = homeworkMean * gradeWeights[CATEGORY.HOMEWORK.ordinal()] / 100;
 
+    // get percentage for labs
+    float labMean = labSum / labs;
+    System.out.printf("Your lab average is %.2f.%n", labMean);
+    gradeTypes[CATEGORY.LABS.ordinal()] =  labMean * gradeWeights[CATEGORY.LABS.ordinal()] / 100;
+
+    // add percentage for extra credit
+    gradeTypes[CATEGORY.EXTRA_CREDIT.ordinal()] = extraCreditSum / 50; // sum * 2 / 100, each extra credit is worth 2%
+    System.out.printf("Your extra credit total is %.2f.%n", gradeTypes[CATEGORY.EXTRA_CREDIT.ordinal()]);
+
+    float sum = 0;
+    for (float gradePercentage : gradeTypes) sum += gradePercentage; // max of 110
+    if (sum < 0 || sum > 110 ) throw new IllegalStateException("WTF why is sum " + sum);
+
+    System.out.printf("Your raw grade is %.1f%%.%n", sum);
+    sum = (int) Math.ceil(sum);
     if (sum < 60) finalGrade = 'F';
     else if (sum < 70) finalGrade = 'D';
     else if (sum < 80) finalGrade = 'C';
     else if (sum < 90) finalGrade = 'B';
     else finalGrade = 'A';
     return finalGrade;
-  }
-
-  /**
-   * @param homeworkGrades List of grades in percentage form (1-100)
-   * @return Appropriate overall homework grade in percentage form (1-100)
-   */
-  private static int calculateHomeworkGrade(int[] homeworkGrades) {
-    // Find lowest
-    int min = homeworkGrades[0];
-    int sum = 0;
-    for (int grade : homeworkGrades) {
-      if (grade < min) min = grade;
-      sum += grade;
-    }
-    // drop lowest grade, return percentage
-    return (int) Math.ceil((sum - min) / (homeworkGrades.length - 1));
-  }
-
-  private static int calculateLabGrade(int[] labGrades) {
-    int sum = 0;
-    for (int grade : labGrades) sum += grade;
-    return (int) Math.ceil(sum / labGrades.length);
-  }
-
-  /**
-   * @param extraCreditGrades List of grades in percentage form (1-100)
-   * @return Absolute fraction extra credit will be of overall grade (2% for each original 100%)
-   */
-  private static int calculateExtraCredit(int[] extraCreditGrades) {
-    int sum = 0;
-    for (int grade : extraCreditGrades) sum += grade;
-    return sum / 50; // sum * 2 / 100
   }
 
   private static boolean isPositiveFloat (String s) {
