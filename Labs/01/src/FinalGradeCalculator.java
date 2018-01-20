@@ -2,27 +2,25 @@ package src;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.nio.file.FileSystems.getDefault;
+import static java.nio.file.Files.newBufferedReader;
 
-public class FinalGradeCalculator {
+public final class FinalGradeCalculator {
 
 	private static final String validCategories = "LABS|HOMEWORK|EXAM 1|EXAM 2|LAB EXAM 1|LAB EXAM 2|FINAL|EXTRA CREDIT";
 	private static final String perfectGradesFile = "perfectGrades.txt";
   private static final String imperfectGradesFile = "grades.txt";
   private static final int[] gradeWeights = new int[] { 20, 30, 10, 10, 10, 10, 10 }; // extra credit NOT included
 
+  private FinalGradeCalculator() { throw new IllegalStateException("Not allowed." ); } // cannot be initialized
 
   public static void main(String[] args) {
     for (Path p : new Path[] { getDefault().getPath(perfectGradesFile), getDefault().getPath(imperfectGradesFile) }) {
-      System.out.printf("Calculating grades for %s... %n", p.toString());
-      try {
-        System.out.printf("%c.%n", getFinalGrade(p));
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      System.out.printf("Calculating grades for %s...%n", p.toString());
+      try { System.out.printf("%c.%n", getFinalGrade(p)); }
+      catch (IOException e) { e.printStackTrace(); }
     }
 	}
 
@@ -31,22 +29,24 @@ public class FinalGradeCalculator {
   }
 
 	private static char getFinalGrade(Path file) throws IOException {
-    int[] gradeTypes = new int[CATEGORY.values().length];
-    char finalGrade;
-    BufferedReader reader = Files.newBufferedReader(file);
+
+    final char finalGrade;
+    final float[] gradeTypes = new float[CATEGORY.values().length];
+    final BufferedReader reader = newBufferedReader(file); // throws IOException
     String currentInput;
     CATEGORY currentCategory = null;
 
     // start reading file
     while ((currentInput = reader.readLine()) != null) { // BufferedReader returns null at EOF
       currentInput = currentInput.trim().toUpperCase(); // uppercase does nothing for numbers
-      System.out.println(currentInput);
       if (currentInput.equals("")) continue;  // ignore blank lines
-      if (isValidCategory(currentInput)) { currentCategory = CATEGORY.valueOf(currentInput.replace(' ', '_')); continue; }
+      if (currentInput.matches(validCategories)) {
+        currentCategory = CATEGORY.valueOf(currentInput.replace(' ', '_'));
+        continue;
+      }
       if (!isPositiveFloat(currentInput) || currentCategory == null) throw new IllegalArgumentException("Bad file format");
 
       switch(currentCategory) {
-        // can only be one of each of these
         case EXAM_1:
         case EXAM_2:
         case LAB_EXAM_1:
@@ -111,8 +111,4 @@ public class FinalGradeCalculator {
     return s.matches("\\d+(\\.\\d+)?"); // modified from StackOverflow: https://stackoverflow.com/a/1102916
   }
 
-  private static boolean isValidCategory(String s) {
-    // validCategories.toString() looks like 'LABS|HOMEWORK|...', i.e. regex format
-    return s.matches(validCategories);
-  }
 }
