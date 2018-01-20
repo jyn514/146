@@ -1,75 +1,118 @@
-package Lab01FinalGradeCalculator.src;
+package src;
 
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static java.nio.file.FileSystems.getDefault;
 
 public class FinalGradeCalculator {
 
-	private static final String validCategories = "LABS|HOMEWORK|EXAM 1|EXAM 2|LAB EXAM 1|LAB EXAM 2";
-
-	private static Scanner file;
-
-	public static void main(String[] args) throws FileNotFoundException {
-		float labAve = 0, firstLabExam = 0, HWAve = 0, firstExam = 0, secondExam = 0, secondLabExam = 0, extraWork = 0,
-				finalExam = 0, rawTotal = 0;
-		char finalGrade;
-		String currentInput;
-		file = new Scanner(new File("C:\\Users\\Joshua\\Documents\\Programming\\Java\\CS 146\\Labs\\Lab01FinalGradeCalculator\\perfectGrades.txt"));
-		currentInput = file.next();
-		
-		while (currentInput.matches(validCategories)) {
-			System.out.println(currentInput);
-
-			switch (currentInput) {
-			case "LABS":
-				labAve = averageAllNumbers();
-				break;
-			case "HOMEWORK":
-				HWAve = averageAllNumbers();
-				break;
-			case "EXAM 1":
-				firstExam = averageAllNumbers();
-				break;
-			case "EXAM 2":
-				secondExam = averageAllNumbers();
-				break;
-			case "LAB EXAM 1":
-				firstLabExam = averageAllNumbers();
-				break;
-			case "LAB EXAM 2":
-				secondLabExam = averageAllNumbers();
-				break;
-			case "FINAL":
-				finalExam = averageAllNumbers();
-				break;
-			case "EXTRA CREDIT":
-				extraWork = averageAllNumbers();
-				break;
-			}
-			currentInput = file.nextLine();
-
-		}
-		file.close();
-		System.out.println(labAve);
-		System.out.println(firstExam);
-		System.out.println(HWAve);
-		System.out.println(secondExam);
-		System.out.println(firstLabExam);
+	private static final String validCategories = "LABS|HOMEWORK|EXAM 1|EXAM 2|LAB EXAM 1|LAB EXAM 2|FINAL|EXTRA CREDIT";
+	private static final String perfectGradesFile = "perfectGrades.txt";
+  private static final String imperfectGradesFile = "grades.txt";
+  private static final int[] gradeWeights = new int[] { 20, 30, 10, 10, 10, 10, 10 }; // extra credit NOT included
 
 
-
+  public static void main(String[] args) {
+    for (Path p : new Path[] { getDefault().getPath(perfectGradesFile), getDefault().getPath(imperfectGradesFile) }) {
+      System.out.printf("Calculating grades for %s... %n", p.toString());
+      try {
+        System.out.printf("%c.%n", getFinalGrade(p));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 	}
 
-	private static float averageAllNumbers() { // this REALLY should not be static
-		int sum = 0, count = 0;
-		while (file.hasNextInt()) {
-			sum += file.nextInt();
-			count++;
-		}
-		file.nextLine(); // hacky
+	public enum CATEGORY {
+    LABS, HOMEWORK, EXAM_1, EXAM_2, LAB_EXAM_1, LAB_EXAM_2, FINAL, EXTRA_CREDIT
+  }
 
-		return (float) sum / (float) count;
-	}
+	private static char getFinalGrade(Path file) throws IOException {
+    int[] gradeTypes = new int[CATEGORY.values().length];
+    char finalGrade;
+    BufferedReader reader = Files.newBufferedReader(file);
+    String currentInput;
+    CATEGORY currentCategory = null;
 
+    // start reading file
+    while ((currentInput = reader.readLine()) != null) { // BufferedReader returns null at EOF
+      currentInput = currentInput.trim().toUpperCase(); // uppercase does nothing for numbers
+      System.out.println(currentInput);
+      if (currentInput.equals("")) continue;  // ignore blank lines
+      if (isValidCategory(currentInput)) { currentCategory = CATEGORY.valueOf(currentInput.replace(' ', '_')); continue; }
+      if (!isPositiveFloat(currentInput) || currentCategory == null) throw new IllegalArgumentException("Bad file format");
+
+      switch(currentCategory) {
+        // can only be one of each of these
+        case EXAM_1:
+        case EXAM_2:
+        case LAB_EXAM_1:
+        case LAB_EXAM_2:
+        case FINAL:
+          gradeTypes[currentCategory.ordinal()] = (int) Math.ceil(
+              Float.parseFloat(currentInput) / 100 * gradeWeights[currentCategory.ordinal()]);
+          break;
+        case LABS:
+        case HOMEWORK:
+        case EXTRA_CREDIT:
+          System.out.printf("%ss are not yet handled.%n", currentCategory.toString());
+
+      }
+    }
+    reader.close();
+
+    int sum = 0;
+    for (int grade : gradeTypes) sum += grade;
+
+    if (sum < 60) finalGrade = 'F';
+    else if (sum < 70) finalGrade = 'D';
+    else if (sum < 80) finalGrade = 'C';
+    else if (sum < 90) finalGrade = 'B';
+    else finalGrade = 'A';
+    return finalGrade;
+  }
+
+  /**
+   * @param homeworkGrades List of grades in percentage form (1-100)
+   * @return Appropriate overall homework grade in percentage form (1-100)
+   */
+  private static int calculateHomeworkGrade(int[] homeworkGrades) {
+    // Find lowest
+    int min = homeworkGrades[0];
+    int sum = 0;
+    for (int grade : homeworkGrades) {
+      if (grade < min) min = grade;
+      sum += grade;
+    }
+    // drop lowest grade, return percentage
+    return (int) Math.ceil((sum - min) / (homeworkGrades.length - 1));
+  }
+
+  private static int calculateLabGrade(int[] labGrades) {
+    int sum = 0;
+    for (int grade : labGrades) sum += grade;
+    return (int) Math.ceil(sum / labGrades.length);
+  }
+
+  /**
+   * @param extraCreditGrades List of grades in percentage form (1-100)
+   * @return Absolute fraction extra credit will be of overall grade (2% for each original 100%)
+   */
+  private static int calculateExtraCredit(int[] extraCreditGrades) {
+    int sum = 0;
+    for (int grade : extraCreditGrades) sum += grade;
+    return sum / 50; // sum * 2 / 100
+  }
+
+  private static boolean isPositiveFloat (String s) {
+    return s.matches("\\d+(\\.\\d+)?"); // modified from StackOverflow: https://stackoverflow.com/a/1102916
+  }
+
+  private static boolean isValidCategory(String s) {
+    // validCategories.toString() looks like 'LABS|HOMEWORK|...', i.e. regex format
+    return s.matches(validCategories);
+  }
 }
