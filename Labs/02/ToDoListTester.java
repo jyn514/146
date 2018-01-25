@@ -5,7 +5,7 @@ public class ToDoListTester {
 		System.out.println("To Do List Tester!");
 		System.out.println("Adding Five Tasks To Do\n");
 		
-		ToDoList t = new ToDoList("Buy Ground Beef", "Buy Cheese", "Buy Taco Shells", "Make Tacos", "Eat Tacos");
+		ToDoList<String> t = new ToDoList<>("Buy Ground Beef", "Buy Cheese", "Buy Taco Shells", "Make Tacos", "Eat Tacos");
 		
 		t.showList();
 		t.goToNext(); // on step 2

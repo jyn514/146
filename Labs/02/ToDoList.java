@@ -1,8 +1,8 @@
-public class ToDoList {
-	ListNode head, current;
+public class ToDoList<T> {
+	private ListNode head, current;
 
 	private class ListNode {
-		String data;
+		T data;
 		ListNode link;
 		ListNode previous;
 
@@ -14,7 +14,7 @@ public class ToDoList {
 			previous = p;
 		}
 
-		ListNode(String d, ListNode l, ListNode p) {
+		ListNode(T d, ListNode l, ListNode p) {
 			data = d;
 			link = l;
 			previous = p;
@@ -27,11 +27,11 @@ public class ToDoList {
 		current = head;
 	}
 
-	ToDoList(String... data) {
+	ToDoList(T ... data) {
 		head = new ListNode();
 		current = head;
-		for (int i = 0; i < data.length; i++) {
-			setData(data[i]); // sets current data
+		for (T aData : data) {
+			setData(aData); // sets current data
 			current.link = new ListNode(current);
 			goToNext();
 		}
@@ -46,15 +46,15 @@ public class ToDoList {
 		}
 	}
 
-	void goToPrev() {
+	private void goToPrev() {
 		current = current.previous;
 	}
 
-	String getData() {
+	T getData() {
 		return current.data;
 	}
 
-	void setData(String s) {
+	void setData(T s) {
 		if (s != null) {
 			current.data = s;
 		}
@@ -68,12 +68,7 @@ public class ToDoList {
 		temp.link = new ListNode(temp);
 	}
 
-	void insert() {
-		current.link = new ListNode(null, current.link, current.previous);
-		current.link.link.previous = current.link;
-	}
-
-	void insert(String s) {
+	void insert(T s) {
 		current.link = new ListNode(s, current.link, current);
 		current.link.link.previous = current.link;
 	}
@@ -93,11 +88,11 @@ public class ToDoList {
 		ListNode temp = head;
 		int i = 0;
 		while (temp.link != null) {
-			System.out.println(String.format("%d. %s", i + 1, temp.data));
+			System.out.printf("%d. %s%n", i + 1, temp.data);
 			temp = temp.link;
 			i++;
 		}
-		System.out.println(String.format("%d. %s", i + 1, temp.data));
+		System.out.printf("%d. %s%n", i + 1, temp.data);
 	}
 
 }

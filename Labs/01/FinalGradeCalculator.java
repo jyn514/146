@@ -1,5 +1,3 @@
-package src;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -7,14 +5,19 @@ import java.nio.file.Path;
 import static java.nio.file.FileSystems.getDefault;
 import static java.nio.file.Files.newBufferedReader;
 
-public final class FinalGradeCalculator {
+final class FinalGradeCalculator {
 
-	private static final String validCategories = "LABS|HOMEWORK|EXAM 1|EXAM 2|LAB EXAM 1|LAB EXAM 2|FINAL|EXTRA CREDIT";
-	private static final String perfectGradesFile = "perfectGrades.txt";
+  private enum CATEGORY {
+    LABS, HOMEWORK, EXAM_1, EXAM_2, LAB_EXAM_1, LAB_EXAM_2, FINAL, EXTRA_CREDIT
+  }
+
+  private static final String validCategories = "LABS|HOMEWORK|EXAM 1|EXAM 2|LAB EXAM 1|LAB EXAM 2|FINAL|EXTRA CREDIT";
+  private static final String perfectGradesFile = "perfectGrades.txt";
   private static final String imperfectGradesFile = "grades.txt";
-  private static final int[] gradeWeights = new int[] { 20, 30, 10, 10, 10, 10, 10 }; // extra credit NOT included
+  // same order as CATEGORY enum. Extra credit NOT included, since weight is dependent on number of assignments
+  private static final int[] gradeWeights = new int[] { 20, 30, 10, 10, 10, 10, 10 };
 
-  private FinalGradeCalculator() { throw new IllegalStateException("Not allowed." ); } // cannot be initialized
+  private FinalGradeCalculator() { throw new IllegalAccessError("Not allowed." ); }
 
   public static void main(String[] args) {
     for (Path p : new Path[] { getDefault().getPath(perfectGradesFile), getDefault().getPath(imperfectGradesFile) }) {
@@ -22,13 +25,19 @@ public final class FinalGradeCalculator {
       try { System.out.printf("%c.%n", getFinalGrade(p)); }
       catch (IOException e) { e.printStackTrace(); }
     }
-	}
-
-	public enum CATEGORY {
-    LABS, HOMEWORK, EXAM_1, EXAM_2, LAB_EXAM_1, LAB_EXAM_2, FINAL, EXTRA_CREDIT
   }
 
-	private static char getFinalGrade(Path file) throws IOException {
+  /**
+   * <i>This</i> mess of a class calculates a final grade from a text document.
+   * Any field not marked as final is a stateful variable. Please don't mess with the stateful variables.
+   * Uses BufferedReader instead of Scanner for efficiency and to avoid exceptions.
+   * 
+   *
+   * @param file Text document containing grades. See grades.txt for an example.
+   * @return final grade for the class. Letter from A-F, excluding E.
+   * @throws IOException if file cannot be accessed
+   */
+  private static char getFinalGrade(Path file) throws IOException {
 
     final char finalGrade;
     final float[] gradeTypes = new float[CATEGORY.values().length];
@@ -111,8 +120,7 @@ public final class FinalGradeCalculator {
     return finalGrade;
   }
 
-  private static boolean isPositiveFloat (String s) {
-    return s.matches("\\d+(\\.\\d+)?"); // modified from StackOverflow: https://stackoverflow.com/a/1102916
-  }
+  // modified from StackOverflow: https://stackoverflow.com/a/1102916
+  private static boolean isPositiveFloat (String s) { return s.matches("\\d+(\\.\\d+)?"); }
 
 }
