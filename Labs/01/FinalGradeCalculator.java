@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
+import java.util.Scanner;
 
 import static java.nio.file.FileSystems.getDefault;
 import static java.nio.file.Files.newBufferedReader;
@@ -11,27 +13,39 @@ final class FinalGradeCalculator {
     LABS, HOMEWORK, EXAM_1, EXAM_2, LAB_EXAM_1, LAB_EXAM_2, FINAL, EXTRA_CREDIT
   }
 
-  private static final String validCategories = "LABS|HOMEWORK|EXAM 1|EXAM 2|LAB EXAM 1|LAB EXAM 2|FINAL|EXTRA CREDIT";
+  // literally just all categories seperated by literal '|'
+  private static final Pattern validCategories = makeValidCategories();
   private static final String perfectGradesFile = "perfectGrades.txt";
   private static final String imperfectGradesFile = "grades.txt";
   // same order as CATEGORY enum. Extra credit NOT included, since weight is dependent on number of assignments
   private static final int[] gradeWeights = new int[] { 20, 30, 10, 10, 10, 10, 10 };
 
-  private FinalGradeCalculator() { throw new IllegalAccessError("Not allowed." ); }
+  private FinalGradeCalculator() { throw new IllegalAccessError("No instantiation allowed." ); }
 
   public static void main(String[] args) {
-    for (Path p : new Path[] { getDefault().getPath(perfectGradesFile), getDefault().getPath(imperfectGradesFile) }) {
-      System.out.printf("Calculating grades for %s...%n", p.toString());
-      try { System.out.printf("%c.%n", getFinalGrade(p)); }
-      catch (IOException e) { e.printStackTrace(); }
+    for (String p : new String[]{ perfectGradesFile,  imperfectGradesFile }) { handleIOForFile(p); }
+    Scanner keyboard = new Scanner(System.in);
+    String input;
+    while (true) {
+      System.out.println("Enter a file to read, or 'quit' to quit.");
+      input = keyboard.nextLine();
+      if (input.equals("quit") || input.equals("exit")) break;
+      handleIOForFile(input);
     }
+  }
+
+  public static void handleIOForFile(String filePath) {
+      System.out.printf("Calculating grades for file %s...%n", filePath);
+      try { System.out.printf("%c.%n", getFinalGrade(getDefault().getPath(filePath))); }
+      catch (IOException e) { System.out.printf(
+          "Could not open file `%s' for reading. Please ensure it exists and you have the proper permissions.%n", filePath);
+      }
   }
 
   /**
    * <i>This</i> mess of a class calculates a final grade from a text document.
    * Any field not marked as final is a stateful variable. Please don't mess with the stateful variables.
    * Uses BufferedReader instead of Scanner for efficiency and to avoid exceptions.
-   * 
    *
    * @param file Text document containing grades. See grades.txt for an example.
    * @return final grade for the class. Letter from A-F, excluding E.
@@ -53,7 +67,7 @@ final class FinalGradeCalculator {
     while ((currentInput = reader.readLine()) != null) { // BufferedReader returns null at EOF
       currentInput = currentInput.trim().toUpperCase(); // uppercase does nothing for numbers
       if (currentInput.equals("")) continue;  // ignore blank lines
-      if (currentInput.matches(validCategories)) {
+      if (validCategories.matcher(currentInput).matches()) {
         currentCategory = CATEGORY.valueOf(currentInput.replace(' ', '_'));
         continue;
       }
@@ -122,5 +136,18 @@ final class FinalGradeCalculator {
 
   // modified from StackOverflow: https://stackoverflow.com/a/1102916
   private static boolean isPositiveFloat (String s) { return s.matches("\\d+(\\.\\d+)?"); }
+
+  /**
+   * CURSE THEE JAVA<br />
+   * no but seriously this is literally <code>'|'.join(CATEGORY) in python.</code>
+   * Java 8 ALMOST managed this but enums don't provide an interface for a list of strings.
+   * @return the stringbuilder way to do <code>'|'.join(CATEGORY)</code>
+   */
+  private static Pattern makeValidCategories() {
+    final StringBuilder valid = new StringBuilder();
+    for (CATEGORY c : CATEGORY.values()) { valid.append(c.name().replace('_', ' ')).append('|'); }
+    valid.deleteCharAt(valid.length() - 1);
+    return Pattern.compile(valid.toString());
+  }
 
 }
