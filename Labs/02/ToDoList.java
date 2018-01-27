@@ -1,25 +1,14 @@
-public class ToDoList<T> {
-	private ListNode head, current;
+import java.util.Iterator;
 
-	private class ListNode {
-		T data;
-		ListNode link;
-		ListNode previous;
+public class ToDoList<T> implements Iterable<T> {
+	private final ListNode head;
+	private transient ListNode current;
 
-		ListNode() {
-			previous = head; // strongly not recommended
-		}
-
-		ListNode(ListNode p) {
-			previous = p;
-		}
-
-		ListNode(T d, ListNode l, ListNode p) {
-			data = d;
-			link = l;
-			previous = p;
-		}
-
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (T t: this) { sb.append(t).append('\n'); }
+		return sb.toString();
 	}
 
 	ToDoList() {
@@ -27,37 +16,34 @@ public class ToDoList<T> {
 		current = head;
 	}
 
+	@SafeVarargs
 	ToDoList(T ... data) {
 		head = new ListNode();
 		current = head;
-		for (T aData : data) {
-			setData(aData); // sets current data
+		for (T t : data) {
+			setData(t);
 			current.link = new ListNode(current);
 			goToNext();
 		}
 		goToNext();
-		deleteCurrent();
+		deleteCurrent(); // why is this here?
 		current = head;
 	}
 
-	void goToNext() {
-		if (current.link != null) {
+	private void goToNext() {
+		if (current == null) current = head;
+		else if (current.link != null) {
 			current = current.link;
 		}
 	}
 
-	private void goToPrev() {
-		current = current.previous;
-	}
-
-	T getData() {
-		return current.data;
+	void goTo(T data) {
+		current = head;
+		while (current != null && !current.data.equals(data)) { goToNext(); }
 	}
 
 	void setData(T s) {
-		if (s != null) {
-			current.data = s;
-		}
+		if (s != null) { current.data = s; }
 	}
 
 	void addItem() {
@@ -78,21 +64,73 @@ public class ToDoList<T> {
 			current.previous.link = current.link;
 			current.link.previous = current.previous;
 		} else {
-			current.previous.link = null;
+			current.previous.link = null; // hooray for garbage collectors!
 		}
-		goToPrev();
+		current = current.previous;
 	}
 
-	void showList() {
-		System.out.println("Printing list");
-		ListNode temp = head;
+	// only here because it's a requirement
+	final void showList() {
+		StringBuilder sb = new StringBuilder("Printing list.\n");
 		int i = 0;
-		while (temp.link != null) {
-			System.out.printf("%d. %s%n", i + 1, temp.data);
-			temp = temp.link;
-			i++;
+		for (T t : this) {
+			sb.append(String.format("%d. %s%n", ++i, t));
 		}
-		System.out.printf("%d. %s%n", i + 1, temp.data);
+		System.out.print(sb);
 	}
 
+	private class ListNode {
+		private T data;
+		private ListNode link;
+		private ListNode previous;
+	
+		@Override
+		public String toString() {
+			return data.toString();
+		}
+	
+		protected ListNode() {
+			previous = head; // strongly not recommended
+		}
+	
+		ListNode(ListNode p) {
+			previous = p;
+		}
+	
+		ListNode(T d, ListNode l, ListNode p) {
+			data = d;
+			link = l;
+			previous = p;
+		}
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new Iterator<T>() {
+			ListNode temp = null;
+			@Override
+			public boolean hasNext() {
+				if (temp == null) return head != null;
+				return temp.link != null;
+			}
+
+			@Override
+			public T next() {
+				if (temp == null) { temp = head; }
+				else { temp = temp.link; }
+				return temp.data;
+			}
+
+			@Override
+			public void remove() {
+				if (temp.link != null) {
+					temp.previous.link = temp.link;
+					temp.link.previous = temp.previous;
+				} else {
+					temp.previous.link = null; // hooray for garbage collectors!
+				}
+				temp = temp.link;
+			}
+		};
+	}
 }
