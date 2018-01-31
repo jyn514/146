@@ -1,124 +1,122 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Game {
+class Game {
 
-	private final String word, gameType;
-	private String hiddenWord, input;
-	private List<String> guesses;
-	private int wrongGuesses;
-	private static final Data d = new Data();
-	private static Scanner keyboard; // should not be static :/
-	private boolean won;
+  private Game() throws IllegalAccessException {
+    throw new IllegalAccessException("No instantiation allowed. Run main method instead.");
+  }
 
-	public static void main(String[] args) {
-		keyboard = new Scanner(System.in);
+  private enum GAME_TYPE { COMPUTER, FRIEND };
+
+  public static void main(String[] args) {
+    final Scanner keyboard = new Scanner(System.in);
+    String playAgain;
+    GAME_TYPE type = null;
+
 		System.out.println(Data.INTRO);
+
 		do {
 			System.out.println("Play against a friend or the computer? [f/c]");
-			new Game(getGameType()); // :D
-			System.out.println("Play again? (yes or quit)");
-		} while (keyboard.next().toLowerCase().contains("yes"));
+      do {
+        String i = keyboard.next().substring(0, 1);
+        switch (i) {
+          case "c": type = GAME_TYPE.COMPUTER; break;
+          case "f": type = GAME_TYPE.FRIEND;  break;
+          default:  System.out.println("Please enter 'f' for friend or 'c' for computer.");
+        }
+      } while (type == null);
+
+      new GameInstance(type, keyboard);
+			System.out.println("Play again?");
+			playAgain = keyboard.next().toLowerCase();
+
+		} while (playAgain.startsWith("y"));
 		System.out.println("Goodbye!");
 		keyboard.close();
 	}
 
-	private static void hackierClearScreen() {
-		for (int i = 0; i < 1000; i++) {
-			System.out.println(); // should clear buffer memory
-		}
-	}
+	private static class GameInstance {
+    private final Scanner keyboard;
+    private final String word;
+    private final List<String> guesses = new ArrayList<>();
+    private int wrongGuesses = 0;
 
-	Game(String s) {
-		gameType = s;
-		won = false;
-		wrongGuesses = 0;
-		guesses = new ArrayList<String>();
+    private GameInstance(GAME_TYPE t, Scanner keyboard) {
+      this.keyboard = keyboard;
 
-		if (gameType.equals("computer")) {
-			word = d.randWord();
-		} else {
-			System.out.println("Type a word for your friend to guess. (Spaces aren't supported yet)");
-			word = keyboard.next();
-			hackierClearScreen();
-		}
+      if ( t == GAME_TYPE.COMPUTER ) { word = Data.randWord();	}
+      else {
+        String tempWord;
+        do {
+          System.out.println("Type a word for your friend to guess (spaces aren't supported yet).");
+          tempWord = keyboard.next().trim(); // TODO: silently takes first word if 2 given
+        } while (!tempWord.matches("[a-zA-Z]+"));
 
-		hiddenWord = repeat(word.length(), "?");
-		while (wrongGuesses < Data.LIVES) {
-			System.out.println(Data.PICTURES[wrongGuesses]);
-			if (guesses.size() > 0) {
-				System.out.println("Guesses so far:");
-				for (String c : guesses) {
-					System.out.print(c + " ");
-				}
-				System.out.println();
-			}
-			System.out.println(hiddenWord);
-			input = getInput();
-			if (word.contains(input)) {
-				hiddenWord = replaceValues();
-			} else {
-				wrongGuesses++;
-			}
-			guesses.add(input);
-			if (hiddenWord.equals(word)) {
-				won = true;
-				break;
-			}
-		}
-		if (won) {
-			System.out.println(Data.WON);
-		} else {
-			System.out.println(Data.LOST);
-			System.out.println(String.format("The word was %s.", word));
-		}
+        word = tempWord;
+        clearScreen();
+      }
 
-	}
+      String hiddenWord = repeat(word.length());
+      String input;
+      while (wrongGuesses < Data.LIVES && !hiddenWord.equals(word)) {
+        System.out.println(Data.PICTURES[wrongGuesses]);
+        if (guesses.size() > 0) {
+          System.out.println("Guesses so far:");
+          for (String c : guesses) { System.out.print(c + " "); }
+          System.out.println();
+        }
+        System.out.println(hiddenWord);
+        input = getInput();
+        if (word.contains(input)) {	hiddenWord = replaceValues(hiddenWord, input);	}
+        else { wrongGuesses++; }
+        guesses.add(input);
+      }
+      if (hiddenWord.equals(word)) { System.out.println(Data.WON); }
+      else { System.out.printf("%s%n%s%nThe word was %s.%n", Data.PICTURES[wrongGuesses], Data.LOST, word); }
+    }
 
-	private static String getGameType() { // really needs not to be static
-		String i = keyboard.next().substring(0, 1);
-		if (i.equals("c")) {
-			return "computer";
-		} else if (i.equals("f")) {
-			return "friend";
-		} else {
-			System.out.println("Please enter 'f' for friend or 'c' for computer.");
-			return getGameType();
-		}
-	}
+    private String replaceValues(String hiddenWord, String input) {
+      StringBuilder temp = new StringBuilder();
+      for (int i = 0; i < word.length(); i++) {
+        if (hiddenWord.charAt(i) != '?') { temp.append(hiddenWord.charAt(i)); }
+        else if (String.valueOf(word.charAt(i)).equals(input)) { temp.append(word.charAt(i)); }
+        else { temp.append('?'); }
+      }
+      return temp.toString().toLowerCase();
+    }
 
-	private String replaceValues() {
-		StringBuilder temp = new StringBuilder();
-		for (int i = 0; i < word.length(); i++) {
-			if (hiddenWord.charAt(i) != '?') {
-				temp.append(hiddenWord.charAt(i));
-			} else if (String.valueOf(word.charAt(i)).equals(input)) {
-				temp.append(word.charAt(i));
-			} else {
-				temp.append('?');
-			}
-		}
-		return temp.toString().toLowerCase();
-	}
+    private String getInput() {
+      while (true) {
+        String in = keyboard.next();
+        if (in.length() != 1) { System.out.println("Please only type one letter."); }
 
-	private String getInput() { // validates input as well
-		String in = keyboard.next();
-		if (in.length() != 1) {
-			System.out.println("Please only type one letter.");
-			return getInput();
-		} else if (guesses.contains(in)) {
-			System.out.println("You have already guessed that.");
-			return getInput();
-		} else if (!in.matches("[A-Za-z]*") && gameType.equals("computer")) {
-			System.out.println("Must only be letters. Don't worry, you don't need special symbols.");
-			return getInput();
-		} else {
-			return in.toLowerCase();
-		}
-	}
+        else if (guesses.contains(in)) { System.out.println("You have already guessed that."); }
 
-	private static String repeat(int i, String c) {
-		return new String(new char[i]).replace("\0", c);
+        else if (!in.matches("[A-Za-z]*")) {
+          System.out.println("Must only be letters. Don't worry, you don't need special symbols.");
+
+        } else return in.toLowerCase();
+      }
+    }
+  }
+
+  private static void clearScreen() {
+    if (System.getProperty("os.name").contains("Windows")) {
+      try { new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor(); }
+      catch (IOException | InterruptedException e) { hackyClearScreen(); }
+    } else { hackyClearScreen(); }
+  }
+
+  private static void hackyClearScreen() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 1000; i++) { sb.append('\n'); }
+    System.out.println(sb);
+  }
+
+  private static String repeat(int i) {
+		return new String(new char[i]).replace("\0", "?");
 	}
 }

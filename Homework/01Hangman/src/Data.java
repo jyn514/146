@@ -12,7 +12,31 @@ import java.util.List;
 import java.util.Random;
 
 class Data {
-  static final String[] PICTURES = makePictures();
+  static final String[] PICTURES = new String[] { // this looked nice at some point :(
+      "\n                +---+\n                |   |\n                    |\n"
+          + "                    |\n                    |\n                    |\n"
+          + "               ==========",
+      "\n                +---+\n                |   |\n                O   |\n"
+          + "                    |\n                    |\n                    |\n"
+          + "               ==========",
+      "\n                +---+\n                |   |\n                O   |\n"
+          + "                |   |\n                    |\n                    |\n"
+          + "               ==========",
+      "\n                +---+\n                |   |\n                O   |\n"
+          + "               /|   |\n                    |\n                    |\n"
+          + "               ==========",
+      "\n                +---+\n                |   |\n                O   |\n"
+          + "               /|\\  |\n" +
+          "                    |\n                    |\n               ==========",
+      "\n                +---+\n                |   |\n                O   |\n"
+          + "               /|\\  |\n               /    |\n                    |\n"
+          + "               ==========",
+      "                +---+\n                |   |\n                O   |\n"
+          + "               /|\\  |\n               / \\  |\n"
+          + "                    |\n               ==========",
+      "\n                +---+\n                ^   |\n                O   |\n"
+          + "               /|\\  |         GAME\n               / \\  |         OVER\n"
+          + "                    |\n               ==========" };
   static final int LIVES = 7;
 
   static final String INTRO = // don't touch
@@ -43,18 +67,13 @@ class Data {
 
   private static final List<String> DICT = loadDict();
   private static final String DICT_PATH = "american-english-small";
-  private Random rand;
+  private static final Random rand = new Random(); // is this good practice?
 
-  Data() {
-    rand = new Random();
-  }
-
-  String randWord() {
-    String w = DICT.get(rand.nextInt(DICT.size())).toLowerCase();
-    if (!w.matches("[A-Za-z]*")) { // letters only
-      return randWord();
-    } else
-      return w;
+  static String randWord() {
+    String w;
+    do { w = DICT.get(rand.nextInt(DICT.size())).toLowerCase(); }
+    while (! w.matches("[A-Za-z]+"));
+    return w;
   }
 
   /**
@@ -66,12 +85,8 @@ class Data {
    * present. Uses built-in dictionary if additional errors occur.
    * 
    * @return List<String> DICT
-   * @throws IOException
-   *           - File not found, permission denied, etc
-   * @throws URISyntaxException
-   *           - No clue
    */
-  private static final List<String> loadDict() {
+  private static List<String> loadDict() {
     try {
       URL u = Data.class.getResource(DICT_PATH);
       if (u != null) {
@@ -82,20 +97,17 @@ class Data {
         URL internetDict = new URL(
                 "https://raw.githubusercontent.com/jyn514/python-challenges/master/games/dict/american-english-small");
         ReadableByteChannel rbc = Channels.newChannel(internetDict.openStream());
-        FileOutputStream fos = new FileOutputStream("american-english-small"); // string arg is the
-                                                                               // output file name
+        FileOutputStream fos = new FileOutputStream("american-english-small");
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE); // works for files < 2^63-1 bytes.
         fos.close();
         u = Data.class.getResource(DICT_PATH);
         Path p = Paths.get(u.toURI());
         return Files.readAllLines(p);
       }
-    } catch (IOException | URISyntaxException e) { // i'm tired of dealing with this shit
-      return makeLimitedDict();
-    }
+    } catch (IOException | URISyntaxException e) { return makeLimitedDict(); }
   }
 
-  private static final List<String> makeLimitedDict() { // found these on google, they looked decent
+  private static List<String> makeLimitedDict() { // found these on google, they looked decent
     return Arrays.asList("accommodate", "afterthought", "allegiance", "aloft", "ancestor",
             "anticipation", "antics", "apparel", "ascend", "beckon", "brink", "catastrophe", "coax",
             "compassion", "complexion", "content", "courteous", "cringe", "derelict", "dignity",
@@ -110,33 +122,5 @@ class Data {
             "satisfactory", "sensitive", "sentiment", "shudder", "sickly", "sleek", "solemn",
             "soothe", "stagger", "stern", "tantalize", "temptation", "transform", "unscrupulous",
             "vain", "vengeance", "violate", "vital", "vivid", "wistful", "yield", "zest");
-  }
-
-  private static final String[] makePictures() { // this looked nice at some point :(
-    return new String[] {
-        "\n" + "                +---+\n" + "                |   |\n" + "                    |\n"
-                + "                    |\n" + "                    |\n" + "                    |\n"
-                + "               ==========",
-        "\n" + "                +---+\n" + "                |   |\n" + "                O   |\n"
-                + "                    |\n" + "                    |\n" + "                    |\n"
-                + "               ==========",
-        "\n" + "                +---+\n" + "                |   |\n" + "                O   |\n"
-                + "                |   |\n" + "                    |\n" + "                    |\n"
-                + "               ==========",
-        "\n" + "                +---+\n" + "                |   |\n" + "                O   |\n"
-                + "               /|   |\n" + "                    |\n" + "                    |\n"
-                + "               ==========",
-        "\n" + "                +---+\n" + "                |   |\n" + "                O   |\n"
-                + "               /|\\  |\n" + // need to keep double backslash
-                "                    |\n" + "                    |\n" + "               ==========",
-        "\n" + "                +---+\n" + "                |   |\n" + "                O   |\n"
-                + "               /|\\  |\n" + "               /    |\n" + "                    |\n"
-                + "               ==========",
-        "                +---+\n" + "                |   |\n" + "                O   |\n"
-                + "               /|\\  |\n" + "               / \\  |\n"
-                + "                    |\n" + "               ==========",
-        "\n" + "                +---+\n" + "                ^   |\n" + "                O   |\n"
-                + "               /|\\  |         GAME\n" + "               / \\  |         OVER\n"
-                + "                    |\n" + "               ==========" };
   }
 }
