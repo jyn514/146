@@ -38,7 +38,7 @@ public class Board {
    this.mines = numberOfMines;
 
    // on average, will fill board in two passes
-    if (mines > 0) { probability = 2 * (rows * columns / mines);  }
+   if (mines > 0) { probability = 2 * (rows * columns / mines);  }
    else { probability = 0; }
     board = new char[rows][columns];
     createMines();
