@@ -1,11 +1,10 @@
 public class ToDoListTester {
-
 	public static void main(String[] args) {
 		System.out.println("To Do List Tester!");
 		System.out.println("Adding Five Tasks To Do\n");
 
-		ToDoList<String> t = new ToDoList<>("Buy Ground Beef", "Buy Cheese", "Buy Taco Shells", "Make Tacos", "Eat Tacos");
-
+		ToDoList<String> t = new ToDoList<>(
+				"Buy Ground Beef", "Buy Cheese", "Buy Taco Shells", "Make Tacos", "Eat Tacos");
 		t.showList();
 
 		System.out.println("\nForgot salsa. Adding after step 2.");
@@ -14,7 +13,7 @@ public class ToDoListTester {
 		t.showList();
 
 		System.out.println("\nActually I'm changing salsa to hot sauce.");
-		t.setData("Buy Hot Sauce");
+		t.setDataAtCurrent("Buy Hot Sauce");
 		t.showList();
 
 		System.out.println("\nAdding guacamole to tacos.");
@@ -22,8 +21,7 @@ public class ToDoListTester {
 		t.showList();
 
 		System.out.println("\nMaybe not.");
-		t.deleteCurrent();
+		t.deleteCurrentNode();
 		t.showList();
 	}
-
 }
