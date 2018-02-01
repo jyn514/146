@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2018 Joshua Nelson
+ *
+ * This program is licensed under the GNU General Public License.
+ * Essentially, you may modify, distribute, and copy this work,
+ * but you must preserve this copyright notice and you MUST
+ * make any changes available AS SOURCE CODE to the end users.
+ *
+ * Details available here:
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * Generic doubly linked list. Contains many helpful methods.
+ */
+
 import java.util.Iterator;
 
 public class DoubleLinkedList<T> implements Iterable<T> {

@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) 2018 Joshua Nelson
+ *
+ * This program is licensed under the GNU General Public License.
+ * Essentially, you may modify, distribute, and copy this work,
+ * but you must preserve this copyright notice and you MUST
+ * make any changes available AS SOURCE CODE to the end users.
+ *
+ * Details available here:
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ */
+
 public class Movie {
   final String name;
   final String director;
