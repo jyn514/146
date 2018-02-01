@@ -1,123 +1,131 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Year;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.Set;
 
 import static java.nio.file.Paths.get;
 
 public class MovieDatabaseFrontEnd {
 
   private static final Path DEFAULT_PATH = get(".").resolve("movies.txt").toAbsolutePath().normalize();
+  private static final int PRESENT = Year.now().getValue();
 
-  private static final String INSTRUCTIONS = "Enter 1: To Add a Movie\n"
-          + "Enter 2: To Remove a Movie by its Title\n" + "Enter 3: To search for a Title\n"
-          + "Enter 4: To search for moves by a Director\n"
-          + "Enter 5: To search for movies of a given Year\n"
-          + "Enter 6: To search for movies of a certain Rating\n"
-          + "Enter 7: To print out all movies\n" + "Enter 8: To print to a database file\n"
-          + "Enter 9: To load a database file\n" + "Enter 0: To quit";
+  private enum Input {
+    QUIT("exit the program, successfully"),
+    ADD("add a movie"), REMOVE("remove a movie by its title"),
+    SEARCH_TITLE("search for a title"), SEARCH_DIRECTOR("search for a director"),
+    SEARCH_YEAR("search for a year"), SEARCH_RATING("search for a rating"),
+    PRINT("print all movies"), WRITE("write database to a file"), LOAD("load database from a file"),
+    HELP("print these instructions");
+
+    final String instructions;
+    Input(String i) { this.instructions = i; }
+  }
+
+  private static void printInstructions() {
+    for (Input i : Input.values()) {
+      System.out.printf("Enter %d to %s.%n", i.ordinal(), i.instructions);
+    }
+  }
 
   public static void main(String[] args) {
     MovieDatabase database = new MovieDatabase();
     Scanner keyboard = new Scanner(System.in);
     boolean quit = false;
-    System.out.println(INSTRUCTIONS);
+    printInstructions();
 
     while (!quit) {
       switch (getInput(keyboard)) {
-      case '?':
-        System.out.println(INSTRUCTIONS);
+      case HELP:
+        printInstructions();
         break;
 
-      case '0':
+      case QUIT:
         quit = true;
         break;
 
-      case '1':
-    	String name = "", director = ""; 
-    	long income;
-    	int year;
-    	
-        System.out.println(
-                "Enter the following details of the movie you wish to add, seperated by a line break.");
-        do {
-        System.out.println("Enter the name of the movie.");
-        name = keyboard.nextLine();
-        } while (name.matches("\\p{Space}*")); // https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
-        
-        do {
-        	System.out.println("Enter the name of the director.");
-            director = keyboard.nextLine();
-        } while (director.matches("\\p{Space}*"));
-
-        System.out.println("Enter a number for income");
-        income = Long.parseLong((getNumericInput(keyboard)));
-
-        do {
-          System.out.println("Enter a year between 1874 and the present. ");
-          year = Integer.parseInt(getNumericInput(keyboard));
-        } while (year < 1874 || year > 2017);
-
+      case ADD:
+        String name, director;
+        long income;
+        int year;
         short rating;
-        do {
-          System.out.println("Enter a rating between 1 and 5. ");
-          rating = Short.parseShort((getNumericInput(keyboard)));
-        } while (rating > 5 || rating < 1);
 
-        database.append(new Movie(name, director, income, year, rating));
-        break;
+      System.out.println("Enter the details of the movie you wish to add, separated by a line break.");
+      do {
+      System.out.println("Enter the name of the movie.");
+      name = keyboard.nextLine();
+      } while (name.matches("\\p{Space}*")); // https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
 
-      case '2':
-        System.out.println("Enter the name of the movie you wish to remove.");
-        String message = database.removeMovieTitle(keyboard.nextLine());
-        System.out.println(message);
-        break;
+      do {
+        System.out.print("Enter the name of the director: ");
+        director = keyboard.nextLine();
+      } while (director.matches("\\p{Space}*"));
 
-      case '3':
-        System.out.println("Enter the name of the movie you wish to search.");
-        print(database.searchByTitle(keyboard.nextLine()));
-        break;
+      System.out.print("Enter a number for income: ");
+      income = getLong(keyboard,0, Long.MAX_VALUE);
 
-      case '4':
-        System.out.println("Enter the director of the movie you wish to search.");
-        print(database.searchByDirector(keyboard.nextLine()));
-        break;
+      System.out.print("Enter a year between 1874 and the present: ");
+      year = (int) getLong(keyboard, 1874, PRESENT);
 
-      case '5':
-        System.out.println("Enter the year of the movie you wish to search.");
-        print(database.searchByYear(Integer.parseInt(getNumericInput(keyboard))));
-        break;
+      System.out.println("Enter a rating between 1 and 5. ");
+      rating = (short) getLong(keyboard, 1, 5);
 
-      case '6':
-        System.out.println("Enter the rating of the movie you wish to search.");
-        print(database.searchByRating(Integer.parseInt(getNumericInput(keyboard))));
-        break;
+      database.append(new Movie(name, director, income, year, rating));
+      break;
 
-      case '7':
-        database.print();
-        break;
+      case REMOVE:
+      System.out.println("Enter the name of the movie you wish to remove.");
+      String message = database.removeMovieTitle(keyboard.nextLine());
+      System.out.println(message);
+      break;
 
-      case '8':
-        System.out.println("Enter the name of the file you wish to save to.");
-        System.out.println("default: " + DEFAULT_PATH);
-        Path p = getPath(keyboard, false);
-        try {
-          database.write(p);
-          System.out.printf("Wrote \"%s\" to %s successfully.%n", database, p);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-        break;
-      case '9':
-        System.out.println("Enter the name of the file you wish to load.");
-        System.out.println("default: " + DEFAULT_PATH);
-        Path rp = getPath(keyboard);
-        try {
-          database = database.read(rp);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-        break;
+      case SEARCH_TITLE:
+      System.out.println("Enter the name of the movie you wish to search.");
+      for (Movie m : database.searchByTitle(keyboard.nextLine())) System.out.println(m);
+      break;
+
+      case SEARCH_DIRECTOR:
+      System.out.print("Enter the director of the movie you wish to search: ");
+      for (Movie m : database.searchByDirector(keyboard.nextLine())) System.out.println(m);
+      break;
+
+      case SEARCH_YEAR:
+      System.out.print("Enter the year of the movie you wish to search: ");
+      for (Movie m : database.searchByYear(getInt(keyboard,1874, PRESENT))) System.out.println(m);
+      break;
+
+      case SEARCH_RATING:
+      System.out.println("Enter the rating of the movie you wish to search.");
+      for (Movie m : database.searchByRating(getShort(keyboard, (short)1, (short)5))) System.out.println(m);
+      break;
+
+      case PRINT:
+      database.print();
+      break;
+
+      case WRITE:
+      System.out.println("Enter the name of the file you wish to save to.");
+      System.out.println("default: " + DEFAULT_PATH);
+      Path p = getPath(keyboard, false);
+      try {
+        database.write(p);
+        System.out.println(String.format("Wrote \"%s\" to %s successfully.", database, p));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      break;
+
+      case LOAD:
+      System.out.println("Enter the name of the file you wish to load.");
+      System.out.println("default: " + DEFAULT_PATH);
+      Path rp = getPath(keyboard);
+      try {
+        database = database.read(rp);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      break;
       }
     }
     keyboard.close();
@@ -129,41 +137,51 @@ public class MovieDatabaseFrontEnd {
   }
 
   private static Path getPath(Scanner keyboard, boolean mustExist) {
-    String in = keyboard.nextLine().trim();
-    final Path p = in.length() == 0 ? DEFAULT_PATH : get(in).toAbsolutePath().normalize();
-
-    if (mustExist && !p.toFile().exists()) {
-      System.out.println(String.format("File %s does not exist. Please enter a different file.", p));
-      return getPath(keyboard, true);
-    }
+    Path p;
+    String in;
+    boolean found = false;
+    do {
+      in = keyboard.nextLine().trim();
+      p = in.length() == 0 ? DEFAULT_PATH : get(in).toAbsolutePath().normalize();
+      if (mustExist && !p.toFile().exists()) {
+        System.out.println(String.format("File %s does not exist. Please enter a different file.", p));
+      } else found = true;
+    } while (!found);
     return p;
   }
 
-  private static char getInput(Scanner keyboard) {
-    return getNumericInput(keyboard, true, 1).charAt(0); // backwards compatibility
+  private static short getShort(Scanner keyboard, short min, short max) {
+    return (short) getLong(keyboard, min, max);
   }
 
-  private static String getNumericInput(Scanner keyboard) {
-    return getNumericInput(keyboard, false, -1); // convenience
+  private static int getInt(Scanner keyboard, int min, int max) {
+    return (int) getLong(keyboard, min, max);
   }
 
-  private static void print(Set<Movie> set) {
-    for (Movie m : set) System.out.println(m);
+  private static long getLong(Scanner keyboard, long min, long max) {
+   long result = 0; // compiler complains otherwise
+   boolean good = false;
+   while (!good) {
+     System.out.printf("Please enter an integer between %d and %d: ", min, max);
+     try {
+       result = Long.parseLong(keyboard.next());
+       if (result >= min && result <= max) {
+        good = true;
+       }
+     } catch (NumberFormatException ignored){}
+   }
+   keyboard.nextLine();
+   return result;
   }
 
-  /*
-   * if maxLength is negative, length is unlimited <br />
-   * requires keyboard in order to be static
-   */
-  private static String getNumericInput(Scanner keyboard, boolean questionMarkAcceptable, int maxLength) {
-    String in = keyboard.nextLine();
-    final String valid = questionMarkAcceptable ? "[0-9]+" : "[0-9?]*";
-    while ((maxLength >= 0 && in.length() > maxLength) || !in.matches(valid) || in.isEmpty()) {
-      in = keyboard.nextLine();
-        System.out.printf(
-            "Invalid input. Please enter input matching the regex %s and less than %s characters long.%n",
-            valid, maxLength);
+  private static Input getInput(Scanner keyboard) {
+    short result = -1;
+    while (result > 10 || result < 0) {
+      System.out.print("Please enter a number between 0 and 10: ");
+      try { result = Short.parseShort(keyboard.nextLine());  }
+      catch (NoSuchElementException | NumberFormatException ignored) {}
     }
-    return in;
+    return Input.values()[result];
   }
+
 }

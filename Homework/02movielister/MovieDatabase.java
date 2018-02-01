@@ -3,21 +3,26 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static java.nio.file.Files.readAllLines;
 
-public class MovieDatabase extends DoublyLinkedList<Movie> {
-
+public class MovieDatabase extends DoubleLinkedList<Movie> {
   void print() { System.out.println(this); }
 
+  @Override
+  public String toString() {
+    StringBuilder all = new StringBuilder();
+    for (Movie m : this) all.append(m).append('\n');
+    return all.length() > 0 ? all.toString() : "Empty database.";
+  }
+
+
   String removeMovieTitle(String title) {
-    goToStart();
     StringBuilder message = new StringBuilder();
     for (Movie m : this) if (m.name.contains(title)) {
       message.append(String.format("Deleted movie %s.", m.name));
-      deleteCurrent();
+      delete(m);
     }
     return (message.length() == 0 ? String.format("No movies of title %s found.", title) : message.toString());
   }
@@ -25,8 +30,9 @@ public class MovieDatabase extends DoublyLinkedList<Movie> {
   void write(Path p) throws IOException {
     File f = p.toFile();
     if (!f.exists() && !f.createNewFile()) {
-      System.err.printf("WARNING: File %s created by different program between check and creation.", f);
+      System.err.printf("WARNING: MovieDatabase: File %s created by different program between check and creation.", f);
     }
+
     if (!(f.isFile() && f.canRead() && f.canWrite())) {
       throw new IOException("Cannot write to file.");
     }
@@ -36,15 +42,10 @@ public class MovieDatabase extends DoublyLinkedList<Movie> {
   }
 
   MovieDatabase read(Path p) throws IOException {
-    MovieDatabase result = new MovieDatabase();
     File f = p.toFile();
-    if (!(f.exists() && f.isFile() && f.canRead())) {
-      throw new IOException("Cannot read file.");
-    }
-    List<String> movies = readAllLines(p);
-    for (String s : movies) {
-      result.append(parse(s));
-    }
+    if (!(f.exists() && f.isFile() && f.canRead())) throw new IOException("Cannot read file.");
+    MovieDatabase result = new MovieDatabase();
+    for (String s : readAllLines(p)) result.append(parse(s));
     return result;
   }
 
@@ -100,11 +101,11 @@ public class MovieDatabase extends DoublyLinkedList<Movie> {
 
   Set<Movie> searchByYear(int n) {
     HashSet<Movie> movieYears = new HashSet<>();
-    for (Movie m : this) if (m.year == n) movieYears.add(m);
+    for (Movie m : this) { if (m.year == n) movieYears.add(m); }
     return movieYears;
   }
 
-  Set<Movie> searchByRating(int n) {
+  Set<Movie> searchByRating(short n) {
     HashSet<Movie> movieRatings = new HashSet<>();
     for (Movie m : this) if (m.rating >= n) movieRatings.add(m);
     return movieRatings;
