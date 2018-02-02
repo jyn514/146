@@ -8,6 +8,18 @@ import java.util.NoSuchElementException;
 import static java.nio.file.FileSystems.getDefault;
 import static java.nio.file.Files.newBufferedReader;
 
+/**
+ * Copyright © 2018 Joshua Nelson
+ * Licensed under the GNU GPL; see https://www.gnu.org/licenses/gpl.html for details.
+ *
+ * Essentially, you may modify, distribute, and use this program freely,
+ * but you may not sell it or make changes to the license, and you MUST
+ * make any changes available AS SOURCE CODE to end users.
+ *
+ * Main and only class. All methods static;
+ * to access programmatically, run handleIOForFile(String) or getFinalGrade(Path).
+ */
+ 
 final class FinalGradeCalculator {
 
   private enum CATEGORY {
@@ -59,7 +71,7 @@ final class FinalGradeCalculator {
    * @return finalGrade Grade for the class. Letter from A-F, excluding E.
    * @throws IOException if file cannot be accessed
    */
-  private static char getFinalGrade(Path file) throws IOException {
+  static char getFinalGrade(Path file) throws IOException {
 
     final char finalGrade;
     final float[] gradeTypes = new float[CATEGORY.values().length];
