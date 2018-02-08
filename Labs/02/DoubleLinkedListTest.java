@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2018 Joshua Nelson.
+ * Copyright (c) 2018 Joshua Nelson
+ *
  *  This program is licensed under the GNU General Public License.
  *  Essentially, you may modify, distribute, and copy this work,
  *  but you must preserve this copyright notice and you MUST
@@ -7,6 +8,8 @@
  *
  *  Details available here:
  *  https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * Unit tests for DoubleLinkedList.
  */
 
 import org.junit.jupiter.api.Test;
@@ -22,6 +25,7 @@ class DoubleLinkedListTest {
 		assertEquals("12\n15\n14\n13\n", intTest.toString());
 		intTest = new DoubleLinkedList<>(1, 2, 3, 4, 5, 6, 7);
 		assertEquals("1\n2\n3\n4\n5\n6\n7\n", intTest.toString());
+
 		stringTest = new DoubleLinkedList<>("hi there", "my name is josh");
 		assertEquals("hi there\nmy name is josh\n", stringTest.toString());
 	}
@@ -31,6 +35,7 @@ class DoubleLinkedListTest {
 		intTest = new DoubleLinkedList<>(4, 1, 6, 2);
 		intTest.goTo(6);
 		assertEquals(6, (int) intTest.getDataAtCurrent());
+
 		stringTest = new DoubleLinkedList<>("this","is","a","list");
 		stringTest.goTo("is");
 		assertEquals("is",stringTest.getDataAtCurrent());
@@ -73,6 +78,6 @@ class DoubleLinkedListTest {
 	@Test
 	void iterator() {
 		intTest = new DoubleLinkedList<>(1,6,4,2,2);
-		intTest.iterator().forEachRemaining(System.out::print);
+		intTest.iterator().forEachRemaining(System.out::println);
 	}
 }

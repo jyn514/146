@@ -1,3 +1,16 @@
+/*
+ * Copyright (c) 2018 Joshua Nelson
+ *
+ * This program is licensed under the GNU General Public License.
+ * Essentially, you may modify, distribute, and copy this work,
+ * but you must preserve this copyright notice and you MUST
+ * make any changes available AS SOURCE CODE to the end users.
+ *
+ * Details available here:
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * Basic tester for ToDoList. More tests available in DoubleLinkedListTest.java.
+ */
 public class ToDoListTester {
 	public static void main(String[] args) {
 		System.out.println("To Do List Tester!");
