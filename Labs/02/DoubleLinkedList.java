@@ -101,9 +101,11 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 	@SafeVarargs
 	final void insert(T... data) {
 		if (data == null || data.length == 0) return;
+		if (current == null) current = head;
 		for (T t : data) {
 			current.nextLink = new ListNode(current, t, current.nextLink);
-			current.nextLink.nextLink.prevLink = current.nextLink;
+			// set prevlink if next is not null
+			if (current.nextLink.nextLink != null) current.nextLink.nextLink.prevLink = current.nextLink;
 			goToNext();
 		}
 	}
