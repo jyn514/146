@@ -1,0 +1,270 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 14 (filtered)">
+<title>Lab 04</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=WordSection1>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:20.0pt'>Lab 04</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:20.0pt'>Circular Linked List</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:20.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal><b>Objective:</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Write a class called <b>GenCircularLinkedList</b> which is a
+generic circular linked list.  This link list is similar to the single linked
+list that was shown in class except the last element’s link points to the first
+element. In other words the tail points to the head.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><img width=576 height=432 src="Lab04_files/image001.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The class <b>GenCircularLinkedList </b>needs to have the
+following:</p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal>Internal class <b>ListNode</b> which has</li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal>Instance Variables</li>
+  <ul style='margin-top:0in' type=square>
+   <li class=MsoNormal><b>data</b> of type T</li>
+   <li class=MsoNormal><b>link</b> of type ListNode</li>
+  </ul>
+  <li class=MsoNormal>Constructors</li>
+  <ul style='margin-top:0in' type=square>
+   <li class=MsoNormal>Default</li>
+   <li class=MsoNormal>Parameterized</li>
+  </ul>
+ </ul>
+ <li class=MsoNormal>Instance Variables</li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal><b>head </b>of type ListNode which always points to the
+      beginning of the linked list</li>
+  <li class=MsoNormal><b>current </b>of type ListNode which moves around
+      pointing to one of the nodes</li>
+  <li class=MsoNormal><b>previous</b> of type ListNode which is one element
+      behind the current</li>
+  <li class=MsoNormal><b>tail</b> of type ListNode which is the last element in
+      the list that’s link points to head</li>
+ </ul>
+</ul>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal>Constructor</li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal>A default constructor that initializes <b>head</b> to an
+      empty ListNode and sets current to point at the head.</li>
+ </ul>
+ <li class=MsoNormal>Methods</li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal><b>goToNext</b> – This moves the current node forward in
+      the list by one node. </li>
+  <li class=MsoNormal><b>goToPrev </b>– This moves the current node backwards
+      in the list by one node.</li>
+  <li class=MsoNormal><b>getDataAtCurrent</b> – returns the data at the current
+      node as long as the current isn’t null</li>
+  <li class=MsoNormal><b>setDataAtCurrent</b> – takes in a parameter and sets
+      the data at the current node to that value as long as current is not null</li>
+  <li class=MsoNormal><b>insert</b>: –  This creates a new ListNode and adds it
+      after the tail. Keep in mind the list must remain circular.</li>
+  <li class=MsoNormal><b>insertNodeAfterCurrent</b> – creates a new ListNode
+      based on data that is passed in by a parameter and puts that node after
+      the current position. Keep in mind that if the current node is either
+      head or tail you need to make sure to set the proper links correctly.</li>
+  <li class=MsoNormal><b>deleteCurrentNode</b> – removes the current node from
+      the list by resetting the links. Keep in mind that if the current node is
+      either the head or tail then there’s some special steps that must be
+      performed.</li>
+  <li class=MsoNormal><b>showList</b> – prints out the contents of the list
+      line-by-line</li>
+  <li class=MsoNormal><b>inList </b>– returns a true or false value based on
+      whether or not the data passed in via a parameter is in the list</li>
+ </ul>
+</ul>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Finally write a class that tests the functionality of a
+circular linked list.</p>
+
+<p class=MsoNormal style='margin-left:.75in'>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>Example Dialog:</b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Circular Linked List Tester</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Create, insert, and print test by adding values 1-4</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>1</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>2</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>3</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>4</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Moving current twice and deleting the current</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>1</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>2</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>4</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Testing In list by searching for the value 4</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>true</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Testing In list by searching for the value 3</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>false</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Testing getting and setting current by adding the value 10 to
+the current data.</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>1</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>2</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>14</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Moving current forward and deleting that node</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>2</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>14</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Moving current backwards and deleting that node</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>2</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Test Done</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>Lab Report Questions:</b></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal>If the reference to an object is lost and thus the object
+     is now unreachable, what does the Java Virtual Machine (JVM) do with said
+     object?</li>
+ <li class=MsoNormal>Is it possible to make a circular doubly linked list? If
+     so how can this be achieved, and if not why?</li>
+</ol>
+
+<p class=MsoNormal><b>Finally:</b></p>
+
+<p class=MsoNormal>Upload the .java file to the dropbox</p>
+
+</div>
+
+</body>
+
+</html>
