@@ -15,7 +15,7 @@
 import java.util.Iterator; // allows foreach loops
 
 public class DoubleLinkedList<T> implements Iterable<T> {
-	private final ListNode head;
+	ListNode head;
 	private transient ListNode current; // transient: don't save to disk when dumping class
 
 	@Override
@@ -145,11 +145,11 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 		System.out.print(sb);
 	}
 
-	private class ListNode {
-		private T data;
-		private ListNode nextLink;
-		private ListNode prevLink;
-	
+	class ListNode {
+		T data;
+		ListNode nextLink;
+		ListNode prevLink;
+
 		@Override
 		public String toString() { return data.toString(); }
 	

@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 public class CircularDoubleLinkedList<T> implements Iterable<T> {
 	private ListNode head;
-	private transient ListNode current;
+	transient ListNode current;
 
 	@Override
 	public String toString() {
