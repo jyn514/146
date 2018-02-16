@@ -7,15 +7,8 @@ public class LinkedListQueue<T> implements Queue<T> {
     T data;
     ListNode link;
 
-    @SuppressWarnings("unused")
-    ListNode() {
-      data = null;
-      link = null;
-    }
-
     ListNode(T givenData) {
       data = givenData;
-      link = null;
     }
     
     @SuppressWarnings("unused")
@@ -27,11 +20,9 @@ public class LinkedListQueue<T> implements Queue<T> {
 
   public void enqueue(T data) {
     if (head == null) {
-      head = new ListNode(data);
-      tail = head;
+      tail = head = new ListNode(data);
     } else {
-      tail.link = new ListNode(data);
-      tail = tail.link;
+      tail = tail.link = new ListNode(data);
     }
   }
   
@@ -63,7 +54,7 @@ public class LinkedListQueue<T> implements Queue<T> {
     return result.toString();
   }
   
-  public void print() {
-    System.out.println(toString());
+  void print() {
+    System.out.println(this);
   }
 }

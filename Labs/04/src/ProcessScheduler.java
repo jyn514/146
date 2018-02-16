@@ -1,13 +1,12 @@
+class ProcessScheduler {
+  private LinkedListQueue<Process> queue = new LinkedListQueue<Process>();
+  private Process currentProcess;
 
-public class ProcessScheduler {
-  LinkedListQueue<Process> queue = new LinkedListQueue<Process>();
-  Process currentProcess;
-
-  public Process getCurrentProcess() {
+  Process getCurrentProcess() {
     return currentProcess;
   }
 
-  public void addProcess(Process p) {
+  void addProcess(Process p) {
     if (currentProcess == null) {
       currentProcess = p;
     } else {
@@ -15,15 +14,15 @@ public class ProcessScheduler {
     }
   }
 
-  public void runNextProcess() {
+  void runNextProcess() {
     currentProcess = queue.dequeue();
   }
 
-  public void cancelCurrentProcess() {
+  void cancelCurrentProcess() {
     runNextProcess(); // no clue what the point of this method is
   }
 
-  public void printProcessQueue() {
+  void printProcessQueue() {
     System.out.println(queue);
   }
 

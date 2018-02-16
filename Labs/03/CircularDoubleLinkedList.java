@@ -40,7 +40,7 @@ public class CircularDoubleLinkedList<T> implements Iterable<T> {
 
 	void goToNext() { current = current.nextLink; }
 
-	void goToPrev() { current = current.prevLink;	}
+	void goToPrev() { current = current.prevLink; }
 
 	void goTo(T data) {
 		goToStart();
@@ -58,10 +58,6 @@ public class CircularDoubleLinkedList<T> implements Iterable<T> {
 		if (this.inList(t)) goTo(t); deleteCurrentNode();
 	}
 
-	/**
-	 * Visible for testing
-	 * @return data at current ListNode
-	 */
 	T getDataAtCurrent() { return current.data; }
 
 	boolean inList(T data) {
@@ -102,14 +98,14 @@ public class CircularDoubleLinkedList<T> implements Iterable<T> {
 		current = original;
 	}
 
-	 	void deleteCurrentNode() {
+	 void deleteCurrentNode() {
 		if (head == null || current == null) return;
 		current.nextLink.prevLink = current.prevLink;
 		current.prevLink.nextLink = current.nextLink;
 		if (current == head) {
 			head = head.nextLink;
-			goToNext();
 		}
+		goToNext();
 	}
 
 	// only here because it's a requirement

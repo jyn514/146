@@ -1,18 +1,25 @@
 
-public class Process {
-  public String name;
-  private double completionTime; // should only be modified through methods
-  public static final double MAX_PROC_TIME = 15.0;
+class Process {
+  public final String name;
+  private double completionTime; // should only be accessed through methods
 
-  public Process() {
-    name = "YouUsedTheDefaultConstructor";
+  public static final double MAX_PROC_TIME = 15.0;
+  private static final String DEFAULT_NAME = "YouUsedTheDefaultConstructor";
+
+  Process() {
+    name = DEFAULT_NAME;
     // time between 0 and 10 ** 10
     completionTime = Math.random() * MAX_PROC_TIME;
   }
   
-  public Process(String givenName, double randTime) {
+  Process(double time) {
+	  name = DEFAULT_NAME;
+	  setCompletionTime(time);
+  }
+  
+  Process(String givenName, double time) {
     name = givenName;
-    completionTime = randTime;
+    setCompletionTime(time);
   }
   
   public String toString() {
@@ -24,7 +31,13 @@ public class Process {
   }
 
   public void setCompletionTime(double d) {
-    completionTime = d;
+	  if (d < 0) {
+		  System.err.printf("WARNING: process given negative time %.3f. Using 0 instead%n", d);
+		  completionTime = 0;
+	  } else if (d > MAX_PROC_TIME) {
+		  System.err.printf("WARNING: process given time %.3f greater than max time. "
+				  +	"Using %d instead%n", d, MAX_PROC_TIME);
+		  completionTime = MAX_PROC_TIME;
+	  } else completionTime = d;
   }
-
 }
