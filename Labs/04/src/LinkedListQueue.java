@@ -1,10 +1,10 @@
 
-public class LinkedListQueue<Type> {
-  ListNode head;
-  ListNode tail;
+public class LinkedListQueue<T> implements Queue<T> {
+  private ListNode head;
+  private ListNode tail;
 
   private class ListNode {
-    Type data;
+    T data;
     ListNode link;
 
     @SuppressWarnings("unused")
@@ -13,19 +13,19 @@ public class LinkedListQueue<Type> {
       link = null;
     }
 
-    ListNode(Type givenData) {
+    ListNode(T givenData) {
       data = givenData;
       link = null;
     }
     
     @SuppressWarnings("unused")
-    ListNode(Type givenData, ListNode node) {
+    ListNode(T givenData, ListNode node) {
       data = givenData;
       link = node;
     }
   }
 
-  public void enqueue(Type data) {
+  public void enqueue(T data) {
     if (head == null) {
       head = new ListNode(data);
       tail = head;
@@ -35,13 +35,13 @@ public class LinkedListQueue<Type> {
     }
   }
   
-  public Type dequeue() {
-    Type result = peek();
+  public T dequeue() {
+    T result = peek();
     head = head.link;
     return result;
   }
   
-  public Type peek() {
+  public T peek() {
     return head.data;
   }
   
