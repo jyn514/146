@@ -4,7 +4,9 @@ import java.util.Scanner;
 public class RoundRobinTournament {
 	private static final String[] names = new String[] {
 		"Bert", "Ernie", "Piggy", "Kermit", "Fozzie", "Gonzo", "Scooter", "Beaker", "Clifford",
-		"Pepe the King Prawn", "Animal", "Walter", "Bunsen", "Camila" };
+		"Pepe the King Prawn", "Animal", "Walter", "Dr. Bunsen Honeydew", "Camila", "Statler", "Waldorf",
+		"Rizzo the Rat", "Swedish Chef", "Sam Eagle", "Dr. Teeth and the Electric Mayham",
+		"Rowlf the Dog", "Bobo the Bear", "Crazy Harry" };
 
 	private static final Random rand = new Random();
 
