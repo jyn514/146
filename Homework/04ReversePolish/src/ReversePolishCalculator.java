@@ -31,7 +31,7 @@ public class ReversePolishCalculator extends DoubleLinkedListStack<Float> {
           case '/':
             if (second != 0) push(pop() / second);
             else System.out.print("Error: Division by zero. " + BAD_EXPRESSION);
-            break;
+            return;
           default:
             System.out.printf("Bad operator %s. %s", s, BAD_EXPRESSION);
             return;
@@ -63,7 +63,7 @@ public class ReversePolishCalculator extends DoubleLinkedListStack<Float> {
 
       keyboard.close();
       reader.close();
-      System.out.println("Quitting.");
+      System.out.println("\nQuitting.");
     } catch (IOException e) { e.printStackTrace(); }
   }
 
