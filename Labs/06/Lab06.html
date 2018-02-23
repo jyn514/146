@@ -1,0 +1,175 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 14 (filtered)">
+<title>Lab 06</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=WordSection1>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:20.0pt'>Lab 06</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:20.0pt'>Contained Words</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:20.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal><b>Objective:</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Write a program that takes in two words, and then it
+recursively determines if the letters of the first word are contained, in any
+order, in the second word.  If the size of the first word is larger than the
+second then it should automatically return false.  Also if both strings are
+empty then return true.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>You May NOT:</b></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal>Use any iterative loops.  In other words, no for-loops, no
+     while-loops, no do-while-loops, no for-each loops.</li>
+ <li class=MsoNormal>Use the string method <b>.contains(String)</b></li>
+</ul>
+
+<p class=MsoNormal><b>You May:</b></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal>Use the string method <b>.charAt(Index)</b></li>
+</ul>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>Hints:</b></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal>Recursive methods generally attempt to solve a smaller
+     problem then return the results of those in order to solve the larger one.</li>
+ <li class=MsoNormal>Think of how to do this with a loop, and use that to guide
+     what parameters you’ll need for your recursive method.</li>
+</ul>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>Example Dialog:</b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Enter 2 words.  I will determine if the letters of one is
+contained in the other</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>elf</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>self</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>They are contained!</span></b></p>
+
+<p class=MsoNormal><b>Example Dialog 2:</b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Enter 2 words.  I will determine if the letters of one is contained
+in the other</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>jerky</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>turkey</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>They are not contained</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b>Example Dialog 3:</b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>Enter 2 words.  I will determine if the letters of one is
+contained in the other</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>asdf</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>fasted</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>They are contained!</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Courier New";
+color:#333399'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b>Lab Report Questions:</b></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal>Write some pseudo-code to solve the same problem but with
+     loops instead.</li>
+ <li class=MsoNormal>Between the recursive version and the iterative version
+     you solved in the previous question, which one would run faster in real
+     time?  Why?</li>
+</ol>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>Finally:</b></p>
+
+<p class=MsoNormal>Upload the .java file to the dropbox</p>
+
+</div>
+
+</body>
+
+</html>
