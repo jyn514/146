@@ -27,12 +27,10 @@ public class SearchStats {
 
 	private static int binarySearch(int[] list, int n) {
 		int min = 0, max = list.length - 1, accesses = 0;
-		int current = -1, previous;
-		int temp;
+		int current, temp;
 		while(true) {
-			previous = current;
 			current = (min + max) / 2;
-			if (current == previous) break;
+			if (current == min) break;
 			accesses++;
 			temp = list[current];
 			if (temp > n) {
