@@ -29,9 +29,10 @@ public class SearchStats {
 		int min = 0, max = list.length - 1, accesses = 0;
 		int current = -1, previous;
 		int temp;
-		do {
+		while(true) {
 			previous = current;
 			current = (min + max) / 2;
+			if (current == previous) break;
 			accesses++;
 			temp = list[current];
 			if (temp > n) {
@@ -41,10 +42,19 @@ public class SearchStats {
 			} else {
 				return accesses;
 			}
-		} while (current != previous);
+		}
 		System.out.println(n + " not found.");
 		return accesses;
 	}
+	
+	/*private static int binarySearch(int[] list, int n, int min, int max, int accesses) {
+		int current = (min + max) / 2;
+		int temp = list[current];
+		if (temp == n) return current;
+		else if (temp < n) {
+			
+		}
+	}*/
 
 	private static int[] createPositiveArray() {
 		int[] result = new int[1000];
