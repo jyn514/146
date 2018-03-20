@@ -1,5 +1,7 @@
 package src;
 
+import java.util.function.Consumer;
+
 public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> {
     private Node root;
 
@@ -19,6 +21,60 @@ public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> 
 
     public void remove(T obj) {
         remove(nodeOf(obj)); // first occurrence
+    }
+
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        forEach(t -> {
+						result.append(t);
+						result.append(' ');
+				});
+        return result.deleteCharAt(result.length() - 1).toString();
+    }
+
+    public void printPreorder () {
+        StringBuilder result = new StringBuilder();
+        forEach(t -> {
+            result.append(t);
+            result.append(' ');
+        }, true);
+        System.out.println(result);
+    }
+
+    public int depth(T obj) {
+        return depth(obj, root, 0);
+    }
+
+    public void forEach(Consumer<? super T> action) {
+            forEach(action, false);
+    }
+
+    public void forEach(Consumer<? super T> action, boolean preorder) {
+        forEach(action, root, preorder);
+    }
+
+    private int depth(T obj, Node start, int startDepth) {
+        if (start == null) return startDepth - 1;
+        if (obj == start.data) return startDepth;
+        int tmp;
+        if ((tmp = depth(obj, start.left, startDepth + 1)) != startDepth) {
+            return tmp;
+        } else if ((tmp = depth(obj, start.right, startDepth + 1)) != startDepth) {
+            return tmp;
+        }
+        return startDepth - 1;
+    }
+
+    private void forEach(Consumer<? super T> action, Node start, boolean preorder) {
+        if (start == null) return;
+        if (preorder) {
+            action.accept(start.data);
+            forEach(action, start.left, true);
+        } else {
+            forEach(action, start.left, false);
+            action.accept(start.data);
+        }
+        forEach(action, start.right, preorder);
     }
 
     private Node nodeOf(T data) {
@@ -43,26 +99,17 @@ public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> 
         return smallest(start.left);
     }
 
-    private Node insert(Node node, T data) { // making this recursive allows rotations to be a lot easier
-        if (node == null) { // leaf
-            node = new Node(data);
-        } else if (data.compareTo(node.data) <= 0) { // data < node.data
-            node.left = insert(node.left, data);
-        } else {
-            node.right = insert(node.right, data);
-        }
-        return node;
-    }
-
-    private void print(Node node) {
-        if (node == null) return;
-        print(node.left);
-				System.out.println(node);
-        print(node.right);
+    private void insert(Node start, T data) { // making this recursive allows rotations to be a lot easier
+        if (data.compareTo(start.data) <= 0) { // data <= start.data
+            if (start.left == null) start.left = new Node(data);
+            else insert(start.left, data);
+        } else if (start.right == null) {
+            start.right = new Node(data);
+        } else insert(start.right, data);
     }
 
 	/**
-     * Worst case: O(n) (unbalanced tree)
+     * Worst case: O(n) (simple linked list)
      * Average case: log_2(n)
      * @param startNode node to start search at
      * @param data data to find
@@ -82,6 +129,7 @@ public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> 
         Node(T data) {
             this.data = data;
         }
+
         public String toString() {
         	return data.toString();
 				}
