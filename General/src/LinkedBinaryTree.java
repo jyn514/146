@@ -3,54 +3,71 @@ package src;
 import java.util.function.Consumer;
 
 public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> {
-    private Node root;
 
-    public void clear() {
-        root = null;
+    public int depth(T obj) {
+        return depth(obj, root, 0);
     }
 
     public boolean contains(T data) {
         return nodeOf(data) != null;
     }
 
-    public void insert(T data) {
+    public void add(T data) {
         if (root == null) {
             root = new Node(data);
-        } else insert(root, data);
+        } else add(root, data);
     }
 
-    public void remove(T obj) {
-        remove(nodeOf(obj)); // first occurrence
+    /**
+     * Deletes only first occurrence of <code>obj</code>.
+     * @param obj Object to delete
+     */
+    public void delete(T obj) {
+        delete(root, obj);
+    }
+
+    public void clear() {
+        root = null;
+    }
+
+    public void printPreorder() {
+        System.out.println(toString(ORDER.PREORDER));
+    }
+
+    public void printPostorder() {
+        System.out.println(toString(ORDER.POSTORDER));
     }
 
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        forEach(t -> {
-						result.append(t);
-						result.append(' ');
-				});
-        return result.deleteCharAt(result.length() - 1).toString();
+        return toString(ORDER.ORDERED);
     }
 
-    public void printPreorder () {
-        StringBuilder result = new StringBuilder();
-        forEach(t -> {
-            result.append(t);
-            result.append(' ');
-        }, true);
-        System.out.println(result);
+    public T least() {
+        return least(root).data;
     }
 
-    public int depth(T obj) {
-        return depth(obj, root, 0);
+    public T greatest() {
+        return greatest(root).data;
     }
 
-    public void forEach(Consumer<? super T> action) {
-            forEach(action, false);
+    protected void forEach(Consumer<? super T> action) {
+        forEach(action, root, ORDER.ORDERED);
     }
 
-    public void forEach(Consumer<? super T> action, boolean preorder) {
-        forEach(action, root, preorder);
+    protected void forEach(Consumer<? super T> action, ORDER order) {
+        forEach(action, root, order);
+    }
+
+    protected Node root;
+
+    protected Node nodeOf(T data) {
+        return nodeOf(root, data);
+    }
+
+    protected int maxDepth(Node node) { return maxDepth(node, 0); }
+
+    private enum ORDER {
+        PREORDER, ORDERED, POSTORDER
     }
 
     private int depth(T obj, Node start, int startDepth) {
@@ -65,50 +82,73 @@ public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> 
         return startDepth - 1;
     }
 
-    private void forEach(Consumer<? super T> action, Node start, boolean preorder) {
-        if (start == null) return;
-        if (preorder) {
-            action.accept(start.data);
-            forEach(action, start.left, true);
-        } else {
-            forEach(action, start.left, false);
-            action.accept(start.data);
-        }
-        forEach(action, start.right, preorder);
+    private String toString(ORDER order) {
+        StringBuilder result = new StringBuilder();
+        forEach(t -> {
+            result.append(t);
+            result.append(' ');
+        }, order);
+        return result.deleteCharAt(result.length() - 1).toString();
     }
 
-    private Node nodeOf(T data) {
-        return nodeOf(root, data);
-    }
-
-    private void remove(Node node) {
-        if (node == null) return;
-
-        if (node.left == null && node.right == null) node = null; // at a leaf
-        else if (node.left != null && node.right != null) { // two children
-            Node smallest = smallest(node.right); // right path has equal values
-            node.data = smallest.data;
-            remove(smallest);
-        } else { // we know exactly one branch is null
-            node = (node.left != null ? node.left : node.right);
-        }
-    }
-
-    private Node smallest(Node start) {
-        if (start.left == null) return start;
-        return smallest(start.left);
-    }
-
-    private void insert(Node start, T data) { // making this recursive allows rotations to be a lot easier
+    private void add(Node start, T data) { // making this recursive allows rotations to be a lot easier
         if (data.compareTo(start.data) <= 0) { // data <= start.data
-            if (start.left == null) start.left = new Node(data);
-            else insert(start.left, data);
+            if (start.left == null) start.left = new Node(data, start);
+            else add(start.left, data);
         } else if (start.right == null) {
-            start.right = new Node(data);
-        } else insert(start.right, data);
+            start.right = new Node(data, start);
+        } else add(start.right, data);
     }
 
-	/**
+    private void forEach(Consumer<? super T> action, Node start, ORDER order) {
+        if (start == null) return;
+        if (order == ORDER.PREORDER) {
+            action.accept(start.data);
+            forEach(action, start.left, order);
+            forEach(action, start.right, order);
+        } else if (order == ORDER.ORDERED) {
+            forEach(action, start.left, order);
+            action.accept(start.data);
+            forEach(action, start.right, order);
+        } else { // postorder
+            forEach(action, start.left, order);
+            forEach(action, start.right, order);
+            action.accept(start.data);
+        }
+    }
+
+    private Node least(Node start) {
+        if (start.left == null) return start;
+        return least(start.left);
+    }
+
+    private Node greatest(Node start) {
+        if (start.right == null) return start;
+        return greatest(start.right);
+    }
+
+    private void delete(Node start, T data) {
+        if (start == null) return;
+        if (start.left == null && start.right == null) start = null; // at a leaf
+        else if (start.left != null && start.right != null) { // two children
+            Node smallest = least(start.right); // right path has equal values
+            start.data = smallest.data;
+            delete(smallest, smallest.data);
+        } else { // we know exactly one branch is null
+            Node next = start.left != null ? start.left : start.right;
+            if (start.parent != null) {
+							if (start.parent.left == start) start.parent.left = next;
+							else start.parent.right = next;
+						}
+        }
+    }
+
+    private int maxDepth (Node node, int current) {
+        if (node == null) return current;
+        return Math.max(maxDepth(node.left, current), maxDepth(node.right, current)) + current;
+    }
+
+    /**
      * Worst case: O(n) (simple linked list)
      * Average case: log_2(n)
      * @param startNode node to start search at
@@ -121,13 +161,16 @@ public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> 
         return nodeOf(startNode.right, data);
     }
 
-    private class Node {
-        private T data;
-        private Node left;
-        private Node right;
+    class Node {
+        T data;
+        Node left, right, parent;
 
         Node(T data) {
             this.data = data;
+        }
+        Node(T data, Node parent) {
+            this.data = data;
+            this.parent = parent;
         }
 
         public String toString() {
