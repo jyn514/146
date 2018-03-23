@@ -11,7 +11,9 @@
  *
  * Unit tests for DoubleLinkedList.
  */
+package test;
 
+import src.DoubleLinkedList;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

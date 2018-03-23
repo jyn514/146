@@ -1,21 +1,30 @@
-import java.applet.Applet;
-import java.awt.*;
+/*
+ * Copyright © 2018 Joshua Nelson
+ * Licensed under the GNU General Licence v3.
+ * Essentially, you may modify, copy, and distribute this program,
+ * but you must preserve this copyright and you must make all changes available to all users of the code.
+ * Details available at https://www.gnu.org/licenses/gpl-3.0.en.html
+ */
 
-public class Fractal extends Applet {
-	private static final long serialVersionUID = 641543232321L; // JApplet implements Serializable
-	private Image image;
+import java.applet.Applet;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+
+public final class Fractal extends Applet {
+	private static final long serialVersionUID = 614516141432L; // Applet implements serializable
+	private Image image;  // would be final if compiler treated init as constructor
 
 	public void init() {
 		super.init();
-		int width = getWidth(), height = getHeight();
+		int width = 1920, height = 1080;
 		image = createImage(width, height + 1); // don't cut off at bottom of screen
-		Graphics drawArea = image.getGraphics();
-		drawArea.setColor(Color.BLACK);
-		sierpinski(width / 2, height, height, drawArea);
+		sierpinski(width / 2, height, height, image.getGraphics());
 	}
 
-	public void paint(Graphics g) {
+	public void paint(final Graphics g) {
 		Rectangle r = getBounds();
+		// resizable
 		g.drawImage(image.getScaledInstance(r.width, r.height, Image.SCALE_DEFAULT), 0, 0, null);
 	}
 
@@ -25,7 +34,7 @@ public class Fractal extends Applet {
 	 * @param side length of side
 	 * @param graphics sheet to draw on
 	 */
-	private static void drawUpsideDownTriangle(int x, int y, int side, Graphics graphics) {
+	private static void drawUpsideDownTriangle(final int x, final int y, final int side, final Graphics graphics) {
 		int height = heightOfTriangle(side);
 		int[] xPoints = {
 				x,
@@ -39,20 +48,21 @@ public class Fractal extends Applet {
 			y - height,
 			y, // original again
 		};
-		graphics.drawPolyline(xPoints, yPoints, 4); // 4th point is original because java is EVIL
+		graphics.drawPolyline(xPoints, yPoints, xPoints.length); // last point is original because java is EVIL
 	}
 
-	private static void sierpinski(int x, int y, int previousSide, Graphics graphics) {
+	private static void sierpinski(final int x, final int y, final int previousSide, final Graphics graphics) {
 		int side = previousSide / 2;
 		drawUpsideDownTriangle(x, y, side, graphics);
 		if (side > 1) {
-			sierpinski(x - side/2, y, side, graphics); // bottom-left
+			sierpinski(x - side / 2, y, side, graphics);  // bottom-left
 			sierpinski(x, y - heightOfTriangle(side), side, graphics); // top
 			sierpinski(x + side / 2, y, side, graphics); // bottom-right
 		}
 	}
 
-	private static int heightOfTriangle(int side) {
-		return (int) (Math.sqrt(5) * side / 2); // by pythagorean theorem; draw it out if you're not convinced
+	private static int heightOfTriangle(final int side) {
+		return (int) (Math.sqrt(3) * side / 2); // by pythagorean theorem; draw it out if you're not convinced
+		// three - it's a magic number youtube.com/watch?v=aU4pyiB-kq0
 	}
 }
