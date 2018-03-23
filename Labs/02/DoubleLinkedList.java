@@ -37,6 +37,12 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 		goToStart();
 	}
 
+	DoubleLinkedList(Iterable<T> data) {
+		current = head = new ListNode(); // dual assignment: current points to head
+		for (T t : data) append(t);
+		goToStart();
+	}
+
 	void goToStart() { current = head; }
 
 	void goToNext() {
@@ -50,7 +56,7 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 	}
 
 	/**
-	 * Go to the first occurence of <code>data</code> in list 
+	 * Go to the first occurence of <code>data</code> in list
 	 * @param data Data to search for
 	 */
 	void goTo(T data) {
@@ -61,9 +67,9 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 	void setDataAtCurrent(T s) {
 		if (s != null) { current.data = s; }
 	}
-	
+
 	/**
-	 * Delete the first occurence of <code>t</code> in list 
+	 * Delete the first occurence of <code>t</code> in list
 	 * @param data Data point to delete
 	 */
 	void delete(T data) {
@@ -152,13 +158,13 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 
 		@Override
 		public String toString() { return data.toString(); }
-	
+
 		ListNode() { // strongly not recommended
 			prevLink = head;
 			data = null;
 			nextLink = null;
 		}
-	
+
 		ListNode(ListNode previous) {
 			this.prevLink = previous;
 			data = null;
