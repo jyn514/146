@@ -1,1 +1,1 @@
-../../../Labs/05/src/Stack.java
+../../../General/src/Stack.java

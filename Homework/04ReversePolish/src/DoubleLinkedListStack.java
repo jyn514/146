@@ -1,1 +1,1 @@
-../../../Labs/05/src/DoubleLinkedListStack.java
+../../../General/src/DoubleLinkedListStack.java
