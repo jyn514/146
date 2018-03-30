@@ -1,18 +1,20 @@
-import java.util.Objects;
+package src;
 
-class Jeep {
+class Jeep implements Comparable<Jeep> {
 
-    final String name;
-    final float weight, horsepower;
+    private final String name;
+    private final float weight, horsepower;
+    private static final String DEFAULT_NAME = "JeepyMcJeepFace";
+    private static final float DEFAULT_WEIGHT = 6431.3114f; // f for FATTY
+
+    Jeep(float horsepower) {
+        this(DEFAULT_NAME, DEFAULT_WEIGHT, horsepower);
+    }
 
     Jeep (String givenName, float givenWeight, float givenHorsepower) {
         name = givenName;
         weight = givenWeight;
         horsepower = givenHorsepower;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -24,27 +26,8 @@ class Jeep {
             '}';
     }
 
-    public float getWeight() {
-        return weight;
-    }
-
-    public float getHorsepower() {
-        return horsepower;
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Jeep jeep = (Jeep) o;
-        return Float.compare(jeep.getWeight(), getWeight()) == 0 &&
-            Float.compare(jeep.getHorsepower(), getHorsepower()) == 0 &&
-            Objects.equals(getName(), jeep.getName());
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(getName(), getWeight(), getHorsepower());
+    public int compareTo(Jeep jeep) {
+        return (int) (horsepower - jeep.horsepower) * 10000;
     }
 }

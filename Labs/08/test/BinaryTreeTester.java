@@ -12,6 +12,25 @@ import src.LinkedBinaryTree;
 public class BinaryTreeTester {
 	public static void main(String[] args) {
 		LinkedBinaryTree<Integer> tree = new LinkedBinaryTree<>();
+		test1(tree);
+		tree.clear();
+		givenTest(tree);
+	}
+
+	private static void givenTest(LinkedBinaryTree<Integer> tree) {
+		for (int i : new int[] { 8, 13, 3, 4, 18, 19, 10, 1, 9, 2 }) {
+			System.out.println("Inserting " + i);
+			tree.add(i);
+		}
+		System.out.println("Printing pre-order");
+		tree.printPreorder();
+
+		System.out.println("Removing 4");
+		tree.delete(4);
+		tree.printPreorder();
+	}
+
+	private static void test1(LinkedBinaryTree<Integer> tree) {
 		for (int i : new int[] {4, 3, 15, 13, 31}) {
 			System.out.println("Inserting " + i);
 			tree.add(i);

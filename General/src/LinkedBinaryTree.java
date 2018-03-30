@@ -23,7 +23,7 @@ public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> 
      * @param obj Object to delete
      */
     public void delete(T obj) {
-        delete(root, obj);
+        delete(nodeOf(obj));
     }
 
     public void clear() {
@@ -117,35 +117,38 @@ public class LinkedBinaryTree<T extends Comparable<T>> implements BinaryTree<T> 
         }
     }
 
-    private Node least(Node start) {
+    protected Node least(Node start) {
         if (start.left == null) return start;
         return least(start.left);
     }
 
-    private Node greatest(Node start) {
+    protected Node greatest(Node start) {
         if (start.right == null) return start;
         return greatest(start.right);
     }
 
-    private void delete(Node start, T data) {
+    protected void delete(Node start) {
         if (start == null) return;
-        if (start.left == null && start.right == null) start = null; // at a leaf
+        if (start.left == null && start.right == null) { // at a leaf
+            if (start.parent.left == start) start.parent.left = null;
+            else start.parent.right = null;
+        }
         else if (start.left != null && start.right != null) { // two children
             Node smallest = least(start.right); // right path has equal values
             start.data = smallest.data;
-            delete(smallest, smallest.data);
+            delete(smallest);
         } else { // we know exactly one branch is null
             Node next = start.left != null ? start.left : start.right;
             if (start.parent != null) {
 							if (start.parent.left == start) start.parent.left = next;
 							else start.parent.right = next;
-						}
+						} else root = next;
         }
     }
 
     private int maxDepth (Node node, int current) {
         if (node == null) return current;
-        return Math.max(maxDepth(node.left, current), maxDepth(node.right, current)) + current;
+        return Math.max(maxDepth(node.left, current + 1), maxDepth(node.right, current + 1));
     }
 
     /**
