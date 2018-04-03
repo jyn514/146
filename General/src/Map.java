@@ -1,5 +1,9 @@
 package src;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.function.Consumer;
+
 /**
  * Copyright © (2018) Joshua Nelson
  * Licensed under the GNU Public License
@@ -7,8 +11,11 @@ package src;
  * but you must preserve this copyright notice and make any changes available as source code to all users.
  * Complete information available at https://www.gnu.org/licenses/gpl-3.0.en.html
  */
-public class LinkedBinaryTree<T extends Comparable<T>> extends KeyValueLinkedBinaryTree<T, T> implements KeyValueBinaryTree<T, T> {
-	public void add(T data) {
-		super.add(data, data);
-	}
+public interface Map<Key extends Comparable<Key>, Value> {
+	void put(Key key, Value data);
+	void add(Value data) throws NotImplementedException;
+	void delete(Key key);
+	void clear();
+	boolean contains(Key key);
+	Value get(Key key);
 }
