@@ -1,0 +1,5 @@
+implementation of priority queue
+heap are type of binary tree (at most 2 comparable children)
+top always greater/less than bottom (as opposed to left/right)
+always balanced in breadth order regardless of implementation
+used for dynamic allocation

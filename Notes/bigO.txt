@@ -1,0 +1,19 @@
+Ordered least to greatest:
+
+O(1) - random access
+O(log2(n)) - binary search, balanced-tree insertion
+O(n) - linear search, non-random access, (optimal) largest in list, unbalanced-tree insertion
+O(n log2(n)) - merge sort, heap sort
+O(n^2) - bubblesort, quicksort, selection sort, insertion sort
+O(n^3) - matrix multiplication
+O(2^n) - tower of hanoi (optimal)
+O(n!) - (naive) largest in list, (optimal) traveling salesman
+O(n^n) - (naive) chess algorithms, (optimal) tetration
+
+Each is asymptotically bounded by function
+Fastest: grows to infinity slower
+
+P vs NP:
+P: n^k
+NP: O > n^k
+
