@@ -81,8 +81,7 @@ public class RoundRobinTournament {
 
 	private static String gameResult(OUTCOME outcome) {
 		switch(outcome) {
-			case ROCK:
-				return "clobbered by";
+			case ROCK: return "clobbered by";
 			case PAPER: return "smothered by";
 			case SCISSORS: return "cut in half by";
 			default: return "destroyed by a cosmic neutrino flying through a black hole along with";
