@@ -1,5 +1,7 @@
 package src;
 
+import java.lang.reflect.Array;
+
 /**
  * Copyright © (2018) Joshua Nelson
  * Licensed under the GNU Public License
@@ -8,7 +10,28 @@ package src;
  * Complete information available at https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 public interface Heap<T extends Comparable<T>> extends BinaryTree<T>, Iterable<T> {
+
+	void add(T t);
+	boolean isEmpty();
+	int size();
 	T peek();
-	T pop(); // delete TOP of tree
-	T[] heapSort(); // ordered
+	T pop();
+	Heap<T> clone();
+
+	static <T extends Comparable<T>> T[] heapSort(Heap<T> heap) {
+		int size = heap.size();
+		if (size == 0) return null;
+		T first = heap.pop();
+		T[] result = (T[]) Array.newInstance(first.getClass(), size);
+		result[0] = first;
+
+		Heap<T> clone = heap.clone();
+
+		int current = 1;
+		T tmpObj;
+		while((tmpObj = clone.pop()) != null) {
+			result[current++] = tmpObj;
+		}
+		return result;
+	}
 }

@@ -1,6 +1,5 @@
 package src;
 
-import java.lang.reflect.Array;
 import java.util.Iterator;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Iterator;
  */
 public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implements Heap<T> {
 
-	private int last; // first null element (in breadth order)
+	private int last = 0; // first null element (in breadth order)
 
 	public ArrayMaxHeap() {
 		this(1024); // kB is nothing
@@ -24,7 +23,6 @@ public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implement
 
 	public ArrayMaxHeap(int size, float loadFactor) {
 		super(size, loadFactor);
-		last = 0;
 	}
 
 	@SafeVarargs
@@ -39,6 +37,12 @@ public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implement
 		for (T t : data) add(t);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (T t : this) sb.append(t).append(',').append(' ');
+		return sb.append('\n').toString();
+	}
 
 	@Override
 	public void add(T obj) {
@@ -51,6 +55,16 @@ public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implement
 			current = parent(current);
 			array[current] = obj;
 		}
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return last == 0;
+	}
+
+	@Override
+	public int size() {
+		return last;
 	}
 
 	@Override
@@ -78,6 +92,16 @@ public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implement
 		return result;
 	}
 
+	@Override
+	public Heap<T> clone() {
+		return new ArrayMaxHeap<>(array, last);
+	}
+
+	ArrayMaxHeap(T[] array, int last) {
+		this.array = array;
+		this.last = last;
+	}
+
 	public T peek() {
 		return array[0];
 	}
@@ -95,21 +119,4 @@ public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implement
 			}
 		};
 	}
-	public T[] heapSort() { // destructive operation
-		if (last == 0) return null;
-		T[] result = (T[]) Array.newInstance(array[0].getClass(), last);
-		Heap<T> clone = new ArrayMaxHeap<T>(array.clone(), last);
-
-		int current = 0;
-		T tmpObj;
-		while((tmpObj = clone.pop()) != null) {
-			result[current++] = tmpObj;
-		}
-		return result;
-		}
-
-		private ArrayMaxHeap(T[] array, int last) {
-		this.array = array;
-		this.last = last;
-		}
 }

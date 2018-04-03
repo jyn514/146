@@ -10,10 +10,9 @@ import src.AVLTree;
  * Complete information available at https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 public class Main {
-	private static final AVLTree<Integer> tree = new AVLTree<>();
 
 	public static void main(String[] args) {
-		tree.clear();
+		final AVLTree<Integer> tree = new AVLTree<>();
 		for (int i = 0; i < 20; i++) {
 			tree.add(i);
 		}
