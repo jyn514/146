@@ -1,0 +1,49 @@
+Graphs
+
+Trees with looser restrictions
+cycles (infinite loops)
+open-ended
+
+Set of vertices and edges
+G = (V, E)
+where V = {V_i}
+      E = {E_k = <V_i, V_j>}
+
+Directed (one-direction) or undirected (bi-directional)
+
+Edges have weights
+
+Ex: map
+Cities are vertices
+Edge weights are distance between
+
+Ex: pathfinding
+
+Ways to represent:
+Linked structure
+Adjacency Matrix
+(?)
+
+Vertices, edges unique
+
+Depth first search: visiting vertices in order
+start from arbitrary origin
+use stack to remember nodes visited
+while (!list.contains(nextEdge.to)) {
+    traverse edge to next
+    add vertex to marked list
+    if (!vertex.hasEdge) {
+        goBack()
+    }
+}
+Potentially will never halt - O(inf)
+
+Breadth first search: visit neighbors
+start from origin
+add to marked list
+look at each neighbor
+    visit if not in list
+    add to visited
+
+
+(in this class only, always pick smaller of two values)

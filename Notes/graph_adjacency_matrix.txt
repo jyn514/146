@@ -1,0 +1,19 @@
+Previously: linked lists
+Now: (n, n) tensor where n is number of vertices
+Each vertex has place in matrix
+Only weights stored; vertex and edges implicit
+
+from: rows
+to: columns
+
+ex:
+0 1 0
+0 0 0
+1 0 0
+
+edge from 2 to 0
+edge from 0 to 1
+
+implies:
+- can't have multiple edges on same path
+- 
