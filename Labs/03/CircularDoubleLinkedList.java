@@ -1,4 +1,4 @@
-/*
+package src;/*
  * Copyright (c) 2018 Joshua Nelson
  *
  * This program is licensed under the GNU General Public License.
@@ -17,12 +17,17 @@ import java.util.Iterator;
 public class CircularDoubleLinkedList<T> implements Iterable<T> {
 	private ListNode head;
 	transient ListNode current;
+	private int size = 0;
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (T t: this) sb.append(t).append('\n');
 		return sb.toString();
+	}
+
+	public int size() {
+		return size;
 	}
 
 	CircularDoubleLinkedList() {
@@ -34,6 +39,11 @@ public class CircularDoubleLinkedList<T> implements Iterable<T> {
 		current = head = new ListNode();
 		for (T t : data) append(t);
 		goToStart();
+	}
+
+	CircularDoubleLinkedList(Iterable<T> list) {
+		this();
+		for (T t : list) this.append(t);
 	}
 
 	void goToStart() { current = head; }
@@ -105,6 +115,7 @@ public class CircularDoubleLinkedList<T> implements Iterable<T> {
 		if (current == head) {
 			head = head.nextLink;
 		}
+		size--;
 		goToNext();
 	}
 
@@ -128,23 +139,14 @@ public class CircularDoubleLinkedList<T> implements Iterable<T> {
 
 		ListNode() { // starts new list
 			prevLink = nextLink = head = this;
-		}
-
-		ListNode(ListNode previous) {
-			prevLink = previous;
-			this.nextLink = head;
-		}
-
-		ListNode(ListNode previous, T data) {
-			prevLink = previous;
-			this.data = data;
-			nextLink = head;
+			size++;
 		}
 
 		ListNode(ListNode previous, T data, ListNode nextLink) {
 			this.prevLink = previous;
 			this.data = data;
 			this.nextLink = nextLink;
+			size++;
 		}
 	}
 
