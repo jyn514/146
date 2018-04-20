@@ -65,7 +65,7 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 	public void setDataAtCurrent(T s) {
 		if (s != null) { current.data = s; }
 	}
-	
+
 	/**
 	 * Delete the first occurence of <code>t</code> in list 
 	 * @param data Data point to delete
@@ -163,13 +163,13 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 
 		@Override
 		public String toString() { return data.toString(); }
-	
+
 		ListNode() { // strongly not recommended
 			prevLink = head;
 			data = null;
 			nextLink = null;
 		}
-	
+
 		ListNode(ListNode previous) {
 			this.prevLink = previous;
 			data = null;
