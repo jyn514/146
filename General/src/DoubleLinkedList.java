@@ -22,8 +22,9 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(); // StringBuilders are more efficient than Strings in loops
-		for (T t: this) sb.append(t).append('\n');
-		return sb.toString();
+		for (T t: this) sb.append(t).append(", ");
+		if (sb.length() == 0) return "";
+		return sb.substring(0, sb.length() - 2);
 	}
 
 	public DoubleLinkedList() {
@@ -39,6 +40,8 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 	}
 
 	void goToStart() { current = head; }
+
+	void clear() { head = null; }
 
 	void goToNext() {
 		if (current == null) current = head; // edge case, perhaps current node was deleted?
@@ -90,8 +93,15 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 	public final void append(T ... data) {
 		if (data == null || data.length == 0) return;
 
+		if (head == null) {
+			head = new ListNode(null, data[0]);
+			head.prevLink = head;
+			data[0] = null;
+		}
 		ListNode temp = head;
+
 		for (T t : data) {
+			if (t == null) continue;
 			// Go to first empty node
 			while (temp.data != null && temp.nextLink != null) {
 				temp = temp.nextLink;
