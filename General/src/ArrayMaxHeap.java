@@ -1,7 +1,5 @@
 package src;
 
-import java.util.Iterator;
-
 /**
  * Copyright © (2018) Joshua Nelson
  * Licensed under the GNU Public License
