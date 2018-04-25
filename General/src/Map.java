@@ -1,9 +1,5 @@
 package src;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.function.Consumer;
-
 /**
  * Copyright © (2018) Joshua Nelson
  * Licensed under the GNU Public License
@@ -13,9 +9,19 @@ import java.util.function.Consumer;
  */
 public interface Map<Key extends Comparable<Key>, Value> {
 	void put(Key key, Value data);
-	void add(Value data) throws NotImplementedException;
+	void add(Value data);
 	void delete(Key key);
 	void clear();
 	boolean contains(Key key);
+	int size();
 	Value get(Key key);
+
+	default boolean isEmpty() {
+		return size() != 0;
+	}
+
+	enum ORDER {
+		PREORDER, INORDER, POSTORDER, BREADTHORDER
+	}
+
 }
