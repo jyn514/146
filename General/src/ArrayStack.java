@@ -1,7 +1,8 @@
+package src;
+
 import java.util.Iterator;
 
-public class ArrayStack<T> implements Stack<T> {
-	private T[] array;
+public class ArrayStack<T> extends ArrayTree<T> implements Stack<T> {
 	private int end = 0;
 	
 	ArrayStack() {
@@ -25,8 +26,7 @@ public class ArrayStack<T> implements Stack<T> {
 	@Override
 	public void push(T data) {
 		if (end >= array.length) {
-			// TODO: fix this
-			throw new IndexOutOfBoundsException("Not enough space in array. Try creating a larger one.");
+			super.initArray();
 		}
 		array[end++] = data;
 	}

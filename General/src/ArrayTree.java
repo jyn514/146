@@ -1,5 +1,7 @@
 package src;
 
+import java.util.Arrays;
+
 /**
  * Copyright © (2018) Joshua Nelson
  * Licensed under the GNU Public License
@@ -7,7 +9,7 @@ package src;
  * but you must preserve this copyright notice and make any changes available as source code to all users.
  * Complete information available at https://www.gnu.org/licenses/gpl-3.0.en.html
  */
-public abstract class ArrayTree<T> {
+public class ArrayTree<T> {
 
 	protected T[] array;
 	private float loadFactor;
@@ -21,10 +23,8 @@ public abstract class ArrayTree<T> {
 	}
 
 	public void clear() {
-		array = (T[]) new Comparable[array.length];
+		Arrays.fill(array, null);
 	}
-
-	protected abstract void add(T obj);
 
 	protected ArrayTree() {
 		this(1024); // kB is nothing
@@ -42,20 +42,8 @@ public abstract class ArrayTree<T> {
 
 	}
 
-	@SafeVarargs
-	protected ArrayTree(T... data) {
-		this(data.length, 2);
-		for (T t : data) add(t);
-	}
-
-	@SafeVarargs
-	protected ArrayTree(float loadFactor, T... data) {
-		this(data.length, loadFactor);
-		for (T t : data) add(t);
-	}
-
-	protected void initArray(int size) {
-		T[] replacing = (T[]) new Comparable[(int) (size * loadFactor)];
+	protected void initArray() {
+		T[] replacing = (T[]) new Comparable[(int) (array.length * loadFactor)];
 		System.arraycopy(array, 0, replacing, 0, array.length);
 		array = replacing;
 	}

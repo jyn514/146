@@ -37,24 +37,15 @@ public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implement
 		for (T t : data) add(t);
 	}
 
+	public T peek() {
+		return array[0];
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (T t : this) sb.append(t).append(',').append(' ');
-		return sb.append('\n').toString();
-	}
-
-	@Override
-	public void add(T obj) {
-		if (last == array.length) initArray(array.length);
-		array[last] = obj;
-		int current = last++; // current points to last NON-null element in array
-		T temp;
-		while (current > 0 && (temp = array[parent(current)]).compareTo(obj) < 0) { // bubbleUp
-			array[current] = temp;
-			current = parent(current);
-			array[current] = obj;
-		}
+		return sb.toString();
 	}
 
 	@Override
@@ -65,6 +56,19 @@ public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implement
 	@Override
 	public int size() {
 		return last;
+	}
+
+	@Override
+	public void add(T obj) {
+		if (last == array.length) initArray();
+		array[last] = obj;
+		int current = last++; // current points to last NON-null element in array
+		T temp;
+		while (current > 0 && (temp = array[parent(current)]).compareTo(obj) < 0) { // bubbleUp
+			array[current] = temp;
+			current = parent(current);
+			array[current] = obj;
+		}
 	}
 
 	@Override
@@ -94,29 +98,17 @@ public class ArrayMaxHeap<T extends Comparable<T>>extends ArrayTree<T> implement
 
 	@Override
 	public Heap<T> clone() {
-		return new ArrayMaxHeap<>(array, last);
+		return new ArrayMaxHeap<>(array.clone(), last);
 	}
 
-	ArrayMaxHeap(T[] array, int last) {
+	/**
+	 * Should ONLY be used for clone
+	 * Has no checks at all; responsibility is on caller to ensure state is consistent
+	 * @param array to use as heap
+	 * @param last size of heap (NOT the size of the array)
+	 */
+	private ArrayMaxHeap(T[] array, int last) {
 		this.array = array;
 		this.last = last;
-	}
-
-	public T peek() {
-		return array[0];
-	}
-
-	public Iterator<T> iterator() {
-		return new Iterator<T>() {
-			public boolean hasNext() {
-				return last != 0;
-			}
-
-			public void remove() { pop(); }
-
-			public T next() {
-				return pop();
-			}
-		};
 	}
 }
