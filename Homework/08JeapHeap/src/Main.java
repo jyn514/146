@@ -13,15 +13,8 @@ public class Main {
 	public static void main(String[] args) {
 		Heap<Jeep> heap = new ArrayMaxHeap<>();
 		Random rand = new Random();
-		for (int i = 0; i < 20; i++) {
-			heap.add(new Jeep(rand.nextFloat() * 1000));
-		}
-		for (int i = 0; i < 5; i++) {
-			heap.pop();
-		}
-		System.out.println(heap);
-		for (Jeep j : heap.heapSort()) {
-			System.out.println(j);
-		}
+		for (int i = 0; i < 20; i++) heap.add(new Jeep(rand.nextFloat() * 1000));
+		for (int i = 0; i < 5; i++) heap.pop();
+		for (Jeep j : heap.heapSort()) System.out.println(j);
 	}
 }
