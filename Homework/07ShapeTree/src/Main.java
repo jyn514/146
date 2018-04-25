@@ -85,7 +85,7 @@ public class Main {
             if (start.data.area >= d) {
                 start.right = null;
                 deleteGreaterThan(d, start.left);
-                searchDelete(start, start.data);
+                delete(start);
             } else {
                 deleteGreaterThan(d, start.right);
             }
