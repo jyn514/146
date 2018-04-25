@@ -10,7 +10,7 @@ public class LinkedListSortedSet<T extends Comparable<T>> extends DoubleLinkedLi
 		while(i.hasNext() && i.next().compareTo(data) < 0) {
 			goToNext();
 		}
-		if (!current.data.equals(data))	insert(data);
+		if (!getDataAtCurrent().equals(data))	insert(data);
 	}
 
 	@Override
