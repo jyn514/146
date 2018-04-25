@@ -15,6 +15,8 @@ package src;
 
 import java.util.Iterator; // allows foreach loops
 
+import static java.util.Arrays.asList;
+
 public class DoubleLinkedList<T> implements Iterable<T> {
 	ListNode head;
 	private transient ListNode current; // transient: don't save to disk when dumping class
@@ -34,8 +36,12 @@ public class DoubleLinkedList<T> implements Iterable<T> {
 
 	@SafeVarargs
 	public DoubleLinkedList(T ... data) {
+		this(asList(data));
+	}
+
+	public DoubleLinkedList(Iterable<T> it) {
 		current = head = new ListNode(); // dual assignment: current points to head
-		for (T t : data) append(t);
+		for (T t : it) append(t);
 		goToStart();
 	}
 
