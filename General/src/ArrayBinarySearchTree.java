@@ -1,5 +1,6 @@
 package src;
 
+import java.util.Iterator;
 import java.util.function.Consumer;
 
 /**
@@ -9,42 +10,47 @@ import java.util.function.Consumer;
  * but you must preserve this copyright notice and make any changes available as source code to all users.
  * Complete information available at https://www.gnu.org/licenses/gpl-3.0.en.html
  */
-public class ArrayBinaryTree<T extends Comparable<T>> implements BinaryTree<T> {
+public class ArrayBinarySearchTree<T extends Comparable<T>> implements BinarySearchTree<T> {
 
 	private final float loadFactor;
+	private int size;
 	private T[] tree;
 
-	ArrayBinaryTree() {
+	ArrayBinarySearchTree() {
 		this(1024); // kB is nothing
 	}
 
-	ArrayBinaryTree(int size) {
+	ArrayBinarySearchTree(int size) {
 		this(size, 2);
 	}
 
-	ArrayBinaryTree(int size, float loadFactor) {
+	ArrayBinarySearchTree(int size, float loadFactor) {
 		if (loadFactor <= 1) throw new IllegalArgumentException("Size must be greater than 1");
 		this.loadFactor = loadFactor;
-		init(size);
+		tree = (T[]) new Comparable[size];
 	}
 
 	@SafeVarargs
-	ArrayBinaryTree(T... data) {
+	ArrayBinarySearchTree(T... data) {
 		this(data.length, 2);
 		for (T t : data) add(t);
 	}
 
+	ArrayBinarySearchTree(Iterable<T> it) {
+		this();
+		for (T t : it) add(t);
+	}
+
 	@SafeVarargs
-	ArrayBinaryTree(float loadFactor, T... data) {
+	ArrayBinarySearchTree(float loadFactor, T... data) {
 		this(data.length, loadFactor);
 		for (T t : data) add(t);
 	}
 
-	private void init(int size) {
-		if (size <= 0) throw new IllegalArgumentException("Size must be greater than 0");
-		if (tree == null) tree = (T[]) new Comparable[(int) (size * loadFactor)];
+	private void init() {
+		if (tree == null) tree = (T[]) new Comparable[(int) (tree.length * loadFactor)];
 		else {
-			T[] replacing = (T[]) new Comparable[(int) (size * loadFactor)];
+			T[] replacing = (T[]) new Comparable[(int) (tree.length * loadFactor)];
 			System.arraycopy(tree, 0, replacing, 0, tree.length);
 			tree = replacing;
 		}
@@ -52,7 +58,10 @@ public class ArrayBinaryTree<T extends Comparable<T>> implements BinaryTree<T> {
 
 	@Override
 	public void add(T obj) {
-		if (tree[0] == null) tree[0] = obj;
+		if (tree[0] == null) {
+			tree[0] = obj;
+			size++;
+		}
 		else insert(0, obj);
 	}
 
@@ -66,6 +75,7 @@ public class ArrayBinaryTree<T extends Comparable<T>> implements BinaryTree<T> {
 		} else { // two children
 			// TODO
 		}
+		size--;
 	}
 
 	@Override
@@ -77,19 +87,23 @@ public class ArrayBinaryTree<T extends Comparable<T>> implements BinaryTree<T> {
 		return indexOf(0, obj) != 0;
 	}
 
+	@Override
+	public int size() {
+		return size;
+	}
+
 	private void insert(int index, T data) {
+		if (index >= tree.length) init();
 		if (tree[index] == null) tree[index] = data;
 		else if (data.compareTo(tree[index]) < 0 && leftChild(index) < tree.length) { // less than tree[index] -> go left
 			insert(leftChild(index), data);
 		} else if (data.compareTo(tree[index]) >= 0) {
-			if (rightChild(index) < tree.length) init(rightChild(index));
 			insert(rightChild(index), data);
-		} else {
-
 		}
+		size++;
 	}
 
-	private int indexOf(int index, T data) {
+	protected int indexOf(int index, T data) {
 		if (index >= tree.length || tree[index] == null) return -1;
 		if (data.compareTo(tree[index]) == 0) return index;
 		if (data.compareTo(tree[index]) < 0) return indexOf(leftChild(index), data);
@@ -143,19 +157,36 @@ public class ArrayBinaryTree<T extends Comparable<T>> implements BinaryTree<T> {
 
 	// for my own sanity
 	private int rightSibling(int index) { return index + 1; }
-	private int leftSibling(int index) { return index - 1; }
 	private int leftChild(int index) { return index * 2 + 1; }
 	private int rightChild(int index) { return index * 2 + 2; }
 
-	private enum ORDER {
-		PREORDER, ORDERED, POSTORDER, BREADTHORDER
-	}
 
-	private void forEach(Consumer<? super T> action, int startIndex, ORDER order) {
+	public void forEach(Consumer<? super T> action, ORDER order) {
 		switch (order) {
 			case BREADTHORDER:
 				for (T t : tree) action.accept(t);
 				break;
 		}
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new Iterator<T>() {
+			int traversed = 0, real = 0;
+
+			@Override
+			public boolean hasNext() {
+				return traversed < size;
+			}
+
+			@Override
+			public T next() {
+				while (tree[real] == null) {
+					real++;
+				}
+				traversed++;
+				return tree[real++];
+			}
+		};
 	}
 }
