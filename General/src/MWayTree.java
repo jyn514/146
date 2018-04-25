@@ -8,4 +8,9 @@ package src;
  * Complete information available at https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 public abstract class MWayTree<T> implements Iterable<T> {
+	final int M;
+
+	MWayTree(int M) {
+		this.M = M;
+	}
 }
