@@ -1,10 +1,6 @@
 package src;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Copyright © (2018) Joshua Nelson
@@ -15,15 +11,21 @@ import java.util.Queue;
  *
  * Can add but not remove
  */
-public class Graph implements Iterable<Graph.Vertex> {
-	private int current = 0; // used for UID
+public class Graph<T> {
+	private int size = 0; // used for UID
 	private Vertex origin; // similar to root in linked list; arbitrary
-	private final DoubleLinkedList<Vertex> vertices = new DoubleLinkedList<>();
-	private Queue<Vertex> queue = new PriorityQueue<>();
+	private final Queue<Vertex> queue = new PriorityQueue<>();
+	private final HashSet<Vertex> vertices = new HashSet<>();
+
+	public int size() { return size; }
 
 	public void addVertex() {
-		Vertex v = new Vertex();
-		vertices.append(v);
+		addVertex(null);
+	}
+
+	public void addVertex(T data) {
+		Vertex v = new Vertex(data);
+		vertices.add(v);
 		if (origin == null) origin = v;
 	}
 
@@ -32,25 +34,27 @@ public class Graph implements Iterable<Graph.Vertex> {
 	public void addEdge(int fromUID, int toUID, double weight) {
 		Vertex from = getVertex(fromUID);
 		Vertex to = getVertex(toUID);
-		if (from == null || to == null) throw new IllegalArgumentException("from and to must already be in graph");
+		if (from == null || to == null) {
+			throw new IllegalArgumentException(String.format(
+					"from and to must already be in graph (given %d and %d)", fromUID, toUID));
+		}
 		from.neighbors.append(new Edge(weight, to));
 	}
 
 	@Override
 	public String toString() {
-		return depthFirstSearch();
+		return depthFirstSearch().toString();
 	}
 
-	@Override
-	public Iterator<Vertex> iterator() {
-		return vertices.iterator();
+	public String cycles() {
+		return cycles(Integer.MAX_VALUE);
 	}
 
-	public String cycles() { // this is an NP hard problem: https://stackoverflow.com/a/15983910
+	public String cycles(int maxDepth) { // this is an NP hard problem: https://stackoverflow.com/a/15983910
 		if (getVertex(0) != null) {
 			DoubleLinkedList<CircularDoubleLinkedList<Vertex>> allCycles = new DoubleLinkedList<>();
 			List<Vertex> visited = new ArrayList<>();
-			cycles(getVertex(0), visited, allCycles);
+			cycles(getVertex(0), visited, allCycles, maxDepth);
 			StringBuilder sb = new StringBuilder();
 			for (CircularDoubleLinkedList<Vertex> cycle : allCycles) {
 				for (int i = 0; i < cycle.size(); i++) {
@@ -66,42 +70,36 @@ public class Graph implements Iterable<Graph.Vertex> {
 		} else return "";
 	}
 
-	private void cycles(Vertex v, List<Vertex> visited, DoubleLinkedList<CircularDoubleLinkedList<Vertex>> allCycles) {
+	private void cycles(Vertex v, List<Vertex> visited, DoubleLinkedList<CircularDoubleLinkedList<Vertex>> allCycles, int depth) {
+		if (depth < 0) return;
 		visited.add(v);
 		for (Edge next : v.neighbors) {
 			if (visited.contains(next.to)) {
 				CircularDoubleLinkedList<Vertex> cycle = new CircularDoubleLinkedList<>(visited.subList(visited.indexOf(next.to), visited.size()));
 				allCycles.append(cycle);
-			} else {
-				cycles(next.to, new ArrayList<>(visited), allCycles);
-			}
+			} else cycles(next.to, new ArrayList<>(visited), allCycles, depth - 1);
 		}
 	}
 
-	public String depthFirstSearch() {
-		DoubleLinkedList<Vertex> markedVertices = new DoubleLinkedList<>();
-		return depthFirstSearch(origin, markedVertices);
+	public List<Vertex> depthFirstSearch() {
+		List<Vertex> markedVertices = new ArrayList<>();
+		depthFirstSearch(origin, markedVertices);
+		return markedVertices;
 	}
 
-	public String depthFirstSearch(Vertex v, DoubleLinkedList<Vertex> markedVertices) {
-		if (markedVertices.inList(v)) return "";
-		markedVertices.append(v);
-		StringBuilder sb = new StringBuilder(v.toString()).append('\n');
+	private void depthFirstSearch(Vertex v, List<Vertex> markedVertices) {
+		if (markedVertices.contains(v)) return;
+		markedVertices.add(v);
 		for (Edge next : v.neighbors) {
-			sb.append(depthFirstSearch(next.to, markedVertices));
+			depthFirstSearch(next.to, markedVertices);
 		}
-		return sb.toString();
 	}
 
-	public String breadthFirstSearch() {
+	private String breadthFirstSearch() {
 		queue.clear();
-		return breadthFirstSearch(origin);
-	}
-
-	private String breadthFirstSearch(Vertex start) {
 		final DoubleLinkedList<Vertex> markedVertices = new DoubleLinkedList<>();
-		StringBuilder sb = new StringBuilder(start.toString()).append('\n');
-		queue.add(start);
+		StringBuilder sb = new StringBuilder(origin.toString()).append('\n');
+		queue.add(origin);
 		while (!queue.isEmpty()) {
 			Vertex v = queue.remove();
 			markedVertices.append(v);
@@ -113,19 +111,24 @@ public class Graph implements Iterable<Graph.Vertex> {
 		return sb.toString();
 	}
 
-
+	private Vertex getVertex(int uid) {
+		return vertices.parallelStream().filter(v -> v.uid == uid).findFirst().orElse(null);
+	}
 
 	public class Vertex implements Comparable<Vertex> {
 		final int uid;
 		final DoubleLinkedList<Edge> neighbors = new DoubleLinkedList<>();
+		T data;
 
-		private Vertex() {
-			this.uid = current++;
+		private Vertex(T data) {
+			this.data = data;
+			this.uid = size++;
 		}
 
 		@Override
 		public String toString() {
-			return String.valueOf(uid);
+			if (data == null)	return String.valueOf(uid);
+			return data.toString();
 		}
 
 		@Override
@@ -144,8 +147,8 @@ public class Graph implements Iterable<Graph.Vertex> {
 		}
 	}
 
-	private class Edge {
-		Graph.Vertex to;
+	class Edge {
+		Graph<T>.Vertex to;
 		final double weight;
 
 		private Edge() {
@@ -168,10 +171,5 @@ public class Graph implements Iterable<Graph.Vertex> {
 			this.to = v;
 			this.weight = weight;
 		}
-	}
-
-	private Vertex getVertex(int uid) {
-		for (Vertex v : vertices) if (v.uid == uid) return v;
-		return null;
 	}
 }
