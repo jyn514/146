@@ -1,7 +1,6 @@
 package src;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -43,7 +42,7 @@ public class ArrayMinHeap<T extends Comparable<T>> extends ArrayTree<T> implemen
 	@Override
 	public void add(T obj) {
 		// if (array == null) array = (T[]) Array.newInstance(obj.getClass(), 1);
-		if (last == array.length) initArray(array.length);
+		if (last == array.length) initArray();
 		array[last] = obj;
 		int current = last++; // current points to last NON-null element in array
 		T temp;
@@ -52,6 +51,16 @@ public class ArrayMinHeap<T extends Comparable<T>> extends ArrayTree<T> implemen
 			current = parent(current);
 			array[current] = obj;
 		}
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return size() != 0;
+	}
+
+	@Override
+	public int size() {
+		return last;
 	}
 
 	@Override
