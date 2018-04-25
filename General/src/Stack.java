@@ -1,4 +1,4 @@
-import java.util.Iterator;
+package src;
 
 public interface Stack<T> extends Iterable<T> {
 	void push(T data);
